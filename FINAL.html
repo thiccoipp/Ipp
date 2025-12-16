@@ -818,13 +818,22 @@ body {
 
 .charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     margin-bottom: 24px;
 }
 
 .wide-chart {
     grid-column: span 2;
+}
+
+@media (max-width: 900px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    .wide-chart {
+        grid-column: span 1;
+    }
 }
 
 @media (max-width: 1200px) {
@@ -2770,9 +2779,7 @@ a:hover {
 <button onclick="toggleFullScreen()" class="btn btn-purple btn-icon" title="Tela Cheia" aria-label="Expandir para tela cheia">
 <i class="fa-solid fa-expand"></i>
 </button>
-<button onclick="exportCSV()" class="btn btn-secondary btn-icon" title="Exportar CSV" aria-label="Exportar dados em formato CSV">
-<i class="fa-solid fa-file-export"></i>
-</button>
+
 <button onclick="toggleTheme()" class="btn btn-ghost btn-icon" title="Alternar Tema" aria-label="Alternar entre tema claro e escuro">
 <i class="fa-solid fa-moon"></i>
 </button>
@@ -2896,7 +2903,7 @@ Base Remota Carregada
 <div class="kpi-lbl">Total de registros</div>
 <div class="demanda-interna-indicator" style="font-size: 0.75em; color: #64748b; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
 <i class="fa-solid fa-inbox" style="font-size: 0.9em;"></i>
-<span id="demandaInternaCount">0</span> Requisições internas
+<span id="demandaInternaCount">0</span> requisições internas
 </div>
 <div class="kpi-helper" id="kTotalHelper">Clique para limpar todos os filtros</div>
 </div>
@@ -4195,8 +4202,16 @@ function processExcelData(arrayBuffer) {
         applyAllFilters();
         
         if (firstLoad) {
-            $('datePreset').value = 'currentMonth';
-            handleDatePreset();
+            // Preset: 01 do mês atual até dia atual + 1
+            const hoje = new Date();
+            const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+            const diaAmanhaObj = new Date(hoje);
+            diaAmanhaObj.setDate(hoje.getDate() + 1);
+
+            $('dateStart').value = primeiroDia.toISOString().split('T')[0];
+            $('dateEnd').value = diaAmanhaObj.toISOString().split('T')[0];
+            $('datePreset').value = '';
+            applyAllFilters();
             firstLoad = false;
         }
         
@@ -4315,13 +4330,24 @@ function renderKPIs() {
     const fcrPerc = total > 0 ? Math.round((fcrCount / total) * 100) : 0;
     
     // Cálculo do tempo médio em dias
-    const closedWithTime = FILTERED.filter(d => d.statusNorm === 'Fechado' && d.tempoResolucao !== null);
+    const closedWithTime = FILTERED.filter(d => {
+        if (d.statusNorm !== 'Fechado') return false;
+        if (!d.dtEnd || !d.dtStart) return false;
+        // Verificar se data fim é diferente de data início (não conta mesmo dia)
+        const startDateStr = d.dtStart.toDateString();
+        const endDateStr = d.dtEnd.toDateString();
+        return startDateStr !== endDateStr;
+    });
     let avgTimeDays = 0;
     let avgTimeDisplay = "0d";
     if (closedWithTime.length > 0) {
-        const totalMs = closedWithTime.reduce((acc, d) => acc + d.tempoResolucao, 0);
-        const avgTimeHours = totalMs / closedWithTime.length / (1000 * 60 * 60);
-        avgTimeDays = (avgTimeHours / 24).toFixed(1);
+        let totalDias = 0;
+        closedWithTime.forEach(d => {
+            const diffTime = Math.abs(d.dtEnd - d.dtStart);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            totalDias += diffDays;
+        });
+        avgTimeDays = (totalDias / closedWithTime.length).toFixed(1);
         avgTimeDisplay = `${avgTimeDays}d`;
     }
     
@@ -5031,13 +5057,16 @@ function createLineChart(id, totalPoints, closedPoints) {
                 tooltip: {
                     callbacks: {
                         title: (items) => {
-                            (() => {
-                                    const label = items[0].label;
-                                    let parsed = moment(label, 'YYYY-MM-DD');
-                                    if (!parsed.isValid()) parsed = moment(label, 'DD/MM');
-                                    if (!parsed.isValid()) parsed = moment(label);
-                                    return parsed.isValid() ? parsed.format('ddd, DD/MM/YYYY') : label;
-                                })();
+                            const label = items[0].label;
+                            let parsed = moment(label, 'YYYY-MM-DD');
+                            if (!parsed.isValid()) parsed = moment(label, 'DD/MM');
+                            if (!parsed.isValid()) parsed = moment(label);
+                            if (parsed.isValid()) {
+                                const diasSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+                                const diaSemana = diasSemana[parsed.day()];
+                                return diaSemana + ', ' + parsed.format('DD/MM/YYYY');
+                            }
+                            return label;
                         },
                         label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}`
                     }
