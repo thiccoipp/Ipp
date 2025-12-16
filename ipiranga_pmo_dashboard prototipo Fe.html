@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ipiranga PMO - Portfolio Dashboard</title>
+    <style>
+        /*
+        ========================================
+        IPIRANGA PMO DASHBOARD - DESIGN SYSTEM
+        ========================================
+
+        Brand Colors (Ipiranga Official):
+        - Primary Blue: #0062A4 (Medium Persian Blue)
+        - Primary Yellow/Gold: #FFD100 (Ipiranga Gold)
+        - Dark Blue: #00225A (Navy)
+
+        Status Colors:
+        - Green (Healthy): #28a745
+        - Yellow (Warning): #ffc107
+        - Red (Critical): #dc3545
+
+        Typography: System fonts for performance
+        */
+
+        :root {
+            /* Ipiranga Brand Colors */
+            --ipiranga-blue: #0062A4;
+            --ipiranga-gold: #FFD100;
+            --ipiranga-navy: #00225A;
+            --ipiranga-blue-light: #e6f2fa;
+            --ipiranga-gold-light: #fff8d6;
+
+            /* Status Colors */
+            --status-green: #28a745;
+            --status-yellow: #ffc107;
+            --status-red: #dc3545;
+            --status-green-bg: #d4edda;
+            --status-yellow-bg: #fff3cd;
+            --status-red-bg: #f8d7da;
+
+            /* Neutral Colors */
+            --white: #ffffff;
+            --gray-50: #f8f9fa;
+            --gray-100: #e9ecef;
+            --gray-200: #dee2e6;
+            --gray-300: #ced4da;
+            --gray-500: #6c757d;
+            --gray-700: #495057;
+            --gray-900: #212529;
+
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--ipiranga-navy) 0%, var(--ipiranga-blue) 100%);
+            color: var(--white);
+            padding: var(--spacing-md) var(--spacing-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--ipiranga-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--ipiranga-navy);
+            font-size: 20px;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .btn-primary {
+            background: var(--ipiranga-gold);
+            color: var(--ipiranga-navy);
+        }
+
+        .btn-primary:hover {
+            background: #e6bc00;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            padding: 0 var(--spacing-xl);
+        }
+
+        .nav-tab {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-500);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab:hover {
+            color: var(--ipiranga-blue);
+        }
+
+        .nav-tab.active {
+            color: var(--ipiranga-blue);
+            border-bottom-color: var(--ipiranga-gold);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Layer Sections */
+        .layer-section {
+            display: none;
+        }
+
+        .layer-section.active {
+            display: block;
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .kpi-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--ipiranga-blue);
+        }
+
+        .kpi-card.strategic {
+            border-left-color: var(--ipiranga-gold);
+            background: linear-gradient(to right, var(--ipiranga-gold-light), var(--white));
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-500);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ipiranga-navy);
+        }
+
+        .kpi-trend {
+            font-size: 0.875rem;
+            margin-top: var(--spacing-xs);
+        }
+
+        .kpi-trend.positive { color: var(--status-green); }
+        .kpi-trend.negative { color: var(--status-red); }
+        .kpi-trend.neutral { color: var(--gray-500); }
+
+        /* Portfolio Health Indicator */
+        .portfolio-health {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+        }
+
+        .health-indicator {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: var(--shadow-md);
+        }
+
+        .health-indicator.green {
+            background: linear-gradient(135deg, var(--status-green) 0%, #218838 100%);
+            color: var(--white);
+        }
+
+        .health-indicator.yellow {
+            background: linear-gradient(135deg, var(--status-yellow) 0%, #e0a800 100%);
+            color: var(--gray-900);
+        }
+
+        .health-indicator.red {
+            background: linear-gradient(135deg, var(--status-red) 0%, #c82333 100%);
+            color: var(--white);
+        }
+
+        .health-score {
+            font-size: 2rem;
+        }
+
+        .health-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .health-details {
+            flex: 1;
+        }
+
+        .health-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ipiranga-navy);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .health-breakdown {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .health-stat {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .health-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .health-dot.green { background: var(--status-green); }
+        .health-dot.yellow { background: var(--status-yellow); }
+        .health-dot.red { background: var(--status-red); }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ipiranga-navy);
+        }
+
+        .section-body {
+            padding: var(--spacing-lg);
+        }
+
+        /* Project Table */
+        .project-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .project-table th,
+        .project-table td {
+            padding: var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .project-table th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-500);
+            font-weight: 600;
+            background: var(--gray-50);
+        }
+
+        .project-table tr:hover {
+            background: var(--gray-50);
+        }
+
+        .project-table tr.strategic {
+            background: var(--ipiranga-gold-light);
+        }
+
+        .project-table tr.strategic:hover {
+            background: #fff0a3;
+        }
+
+        .project-name {
+            font-weight: 600;
+            color: var(--ipiranga-navy);
+        }
+
+        .project-type {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .project-type.strategic {
+            background: var(--ipiranga-gold);
+            color: var(--ipiranga-navy);
+        }
+
+        .project-type.medium {
+            background: var(--ipiranga-blue-light);
+            color: var(--ipiranga-blue);
+        }
+
+        .project-type.small {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.green {
+            background: var(--status-green-bg);
+            color: #155724;
+        }
+
+        .status-badge.yellow {
+            background: var(--status-yellow-bg);
+            color: #856404;
+        }
+
+        .status-badge.red {
+            background: var(--status-red-bg);
+            color: #721c24;
+        }
+
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-icon.green { background: var(--status-green); }
+        .status-icon.yellow { background: var(--status-yellow); }
+        .status-icon.red { background: var(--status-red); }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.green { background: var(--status-green); }
+        .progress-fill.yellow { background: var(--status-yellow); }
+        .progress-fill.red { background: var(--status-red); }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+        }
+
+        .filter-select {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            min-width: 150px;
+        }
+
+        /* Risk List */
+        .risk-list {
+            list-style: none;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .risk-item:last-child {
+            border-bottom: none;
+        }
+
+        .risk-level {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .risk-level.high { background: var(--status-red); }
+        .risk-level.medium { background: var(--status-yellow); }
+        .risk-level.low { background: var(--status-green); }
+
+        .risk-content {
+            flex: 1;
+        }
+
+        .risk-description {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .risk-project {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ipiranga-navy);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--gray-500);
+        }
+
+        .modal-close:hover {
+            background: var(--gray-200);
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .modal-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--ipiranga-blue);
+            box-shadow: 0 0 0 3px rgba(0,98,164,0.1);
+        }
+
+        .score-input-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .score-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-slider {
+            margin-top: var(--spacing-sm);
+        }
+
+        .score-value {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ipiranga-blue);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Detail View */
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ipiranga-navy);
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .metric-card {
+            background: var(--gray-50);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ipiranga-navy);
+        }
+
+        /* Milestones */
+        .milestone-list {
+            list-style: none;
+        }
+
+        .milestone-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .milestone-date {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .milestone-content {
+            flex: 1;
+        }
+
+        .milestone-name {
+            font-weight: 500;
+        }
+
+        .milestone-status {
+            font-size: 0.75rem;
+        }
+
+        /* Charts placeholder */
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: var(--spacing-sm);
+            height: 150px;
+            padding: var(--spacing-md);
+        }
+
+        .bar {
+            width: 40px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s ease;
+        }
+
+        .bar-label {
+            font-size: 0.625rem;
+            text-align: center;
+            margin-top: var(--spacing-xs);
+            color: var(--gray-500);
+        }
+
+        /* Add Project Button */
+        .add-project-btn {
+            position: fixed;
+            bottom: var(--spacing-xl);
+            right: var(--spacing-xl);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--ipiranga-gold);
+            color: var(--ipiranga-navy);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.2s ease;
+        }
+
+        .add-project-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: var(--spacing-xl);
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--ipiranga-navy);
+            color: var(--white);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .portfolio-health {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .health-breakdown {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .score-input-group {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--ipiranga-blue);
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: var(--spacing-md);
+            background: none;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* History Timeline */
+        .history-timeline {
+            position: relative;
+            padding-left: var(--spacing-lg);
+        }
+
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-200);
+        }
+
+        .history-item {
+            position: relative;
+            padding-bottom: var(--spacing-lg);
+        }
+
+        .history-item::before {
+            content: '';
+            position: absolute;
+            left: calc(-1 * var(--spacing-lg) + 1px);
+            top: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ipiranga-blue);
+        }
+
+        .history-date {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .history-scores {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xs);
+        }
+
+        .history-score {
+            font-size: 0.75rem;
+        }
+
+        /* Clickable Row */
+        .clickable-row {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-brand">
+            <div class="header-logo">i</div>
+            <div>
+                <div class="header-title">PMO Portfolio Dashboard</div>
+                <div class="header-subtitle">Ipiranga - Gestão de Projetos</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="exportData()">📤 Exportar</button>
+            <button class="btn btn-primary" onclick="openUpdateModal()">+ Atualizar Projeto</button>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-layer="executive" onclick="switchLayer('executive')">
+            📊 Visão Executiva
+        </button>
+        <button class="nav-tab" data-layer="tactical" onclick="switchLayer('tactical')">
+            📋 Gestão Tática
+        </button>
+        <button class="nav-tab" data-layer="analytical" onclick="switchLayer('analytical')">
+            🔍 Análise Detalhada
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- LAYER 1: Executive Overview -->
+        <section id="layer-executive" class="layer-section active">
+            <!-- Portfolio Health -->
+            <div class="portfolio-health">
+                <div id="portfolioHealthIndicator" class="health-indicator green">
+                    <span class="health-score">85%</span>
+                    <span class="health-label">Saúde</span>
+                </div>
+                <div class="health-details">
+                    <h2 class="health-title">Saúde do Portfólio</h2>
+                    <p style="color: var(--gray-500); margin-bottom: var(--spacing-md); font-size: 0.875rem;">
+                        Atualizado em tempo real com base nos scores dos projetos
+                    </p>
+                    <div class="health-breakdown" id="healthBreakdown">
+                        <div class="health-stat">
+                            <span class="health-dot green"></span>
+                            <span><strong id="greenCount">0</strong> Saudáveis</span>
+                        </div>
+                        <div class="health-stat">
+                            <span class="health-dot yellow"></span>
+                            <span><strong id="yellowCount">0</strong> Atenção</span>
+                        </div>
+                        <div class="health-stat">
+                            <span class="health-dot red"></span>
+                            <span><strong id="redCount">0</strong> Críticos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card strategic">
+                    <div class="kpi-label">Projetos Estratégicos</div>
+                    <div class="kpi-value" id="strategicCount">0</div>
+                    <div class="kpi-trend neutral">Alta prioridade</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Projetos Médios</div>
+                    <div class="kpi-value" id="mediumCount">0</div>
+                    <div class="kpi-trend neutral">Média prioridade</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Projetos Pequenos</div>
+                    <div class="kpi-value" id="smallCount">0</div>
+                    <div class="kpi-trend neutral">Operacionais</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Projetos</div>
+                    <div class="kpi-value" id="totalProjects">0</div>
+                    <div class="kpi-trend neutral">Portfólio ativo</div>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Aderência ao Cronograma</div>
+                    <div class="kpi-value" id="scheduleAdherence">0%</div>
+                    <div class="kpi-trend" id="scheduleTrend">-</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Desvio Financeiro</div>
+                    <div class="kpi-value" id="financialDeviation">0%</div>
+                    <div class="kpi-trend" id="financialTrend">-</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Score Médio de Risco</div>
+                    <div class="kpi-value" id="avgRiskScore">0</div>
+                    <div class="kpi-trend" id="riskTrend">-</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Progresso Médio</div>
+                    <div class="kpi-value" id="avgProgress">0%</div>
+                    <div class="kpi-trend neutral">Todos os projetos</div>
+                </div>
+            </div>
+
+            <!-- Critical Risks -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">🚨 Riscos Críticos</h3>
+                    <span style="font-size: 0.875rem; color: var(--gray-500);" id="riskCount">0 riscos ativos</span>
+                </div>
+                <div class="section-body">
+                    <ul class="risk-list" id="criticalRisksList">
+                        <li class="risk-item">
+                            <span style="color: var(--gray-500)">Nenhum risco crítico identificado</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Strategic Projects Summary -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">⭐ Projetos Estratégicos em Destaque</h3>
+                </div>
+                <div class="section-body">
+                    <table class="project-table">
+                        <thead>
+                            <tr>
+                                <th>Projeto</th>
+                                <th>Progresso</th>
+                                <th>Status</th>
+                                <th>Risco</th>
+                            </tr>
+                        </thead>
+                        <tbody id="strategicProjectsTable">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--gray-500);">
+                                    Nenhum projeto estratégico cadastrado
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- LAYER 2: Tactical Management -->
+        <section id="layer-tactical" class="layer-section">
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Tipo de Projeto</label>
+                    <select class="filter-select" id="filterType" onchange="applyFilters()">
+                        <option value="all">Todos</option>
+                        <option value="strategic">Estratégico</option>
+                        <option value="medium">Médio</option>
+                        <option value="small">Pequeno</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" id="filterStatus" onchange="applyFilters()">
+                        <option value="all">Todos</option>
+                        <option value="green">Saudável</option>
+                        <option value="yellow">Atenção</option>
+                        <option value="red">Crítico</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Full Project List -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">📋 Lista de Projetos</h3>
+                    <span style="font-size: 0.875rem; color: var(--gray-500);" id="projectListCount">0 projetos</span>
+                </div>
+                <div class="section-body" style="padding: 0;">
+                    <table class="project-table">
+                        <thead>
+                            <tr>
+                                <th>Projeto</th>
+                                <th>Tipo</th>
+                                <th>Progresso</th>
+                                <th>Cronograma</th>
+                                <th>Custo</th>
+                                <th>Escopo</th>
+                                <th>Risco</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fullProjectTable">
+                            <tr>
+                                <td colspan="8" style="text-align: center; color: var(--gray-500);">
+                                    Nenhum projeto cadastrado
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Cost Analysis -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">💰 Análise de Custos</h3>
+                </div>
+                <div class="section-body">
+                    <table class="project-table">
+                        <thead>
+                            <tr>
+                                <th>Projeto</th>
+                                <th>Orçamento Planejado</th>
+                                <th>Custo Real</th>
+                                <th>Variação</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="costAnalysisTable">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--gray-500);">
+                                    Nenhum projeto cadastrado
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- LAYER 3: Analytical / Drill-down -->
+        <section id="layer-analytical" class="layer-section">
+            <div id="analyticalContent">
+                <!-- Project Selection -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3 class="section-title">🔍 Selecione um Projeto para Análise Detalhada</h3>
+                    </div>
+                    <div class="section-body">
+                        <select class="form-select" id="projectDetailSelect" onchange="showProjectDetail()">
+                            <option value="">Selecione um projeto...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Project Detail View (hidden by default) -->
+                <div id="projectDetailView" style="display: none;">
+                    <div class="detail-header">
+                        <div>
+                            <h2 class="detail-title" id="detailProjectName">Nome do Projeto</h2>
+                            <div class="detail-meta">
+                                <span class="project-type strategic" id="detailProjectType">Estratégico</span>
+                                <span class="status-badge green" id="detailProjectStatus">
+                                    <span class="status-icon green"></span>
+                                    Saudável
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="detail-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Score de Cronograma</div>
+                            <div class="metric-value" id="detailScheduleScore">0</div>
+                            <div class="progress-bar" style="margin-top: 8px;">
+                                <div class="progress-fill green" id="detailScheduleBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Score de Custo</div>
+                            <div class="metric-value" id="detailCostScore">0</div>
+                            <div class="progress-bar" style="margin-top: 8px;">
+                                <div class="progress-fill green" id="detailCostBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Score de Escopo</div>
+                            <div class="metric-value" id="detailScopeScore">0</div>
+                            <div class="progress-bar" style="margin-top: 8px;">
+                                <div class="progress-fill green" id="detailScopeBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Score de Risco</div>
+                            <div class="metric-value" id="detailRiskScore">0</div>
+                            <div class="progress-bar" style="margin-top: 8px;">
+                                <div class="progress-fill green" id="detailRiskBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-lg);">
+                        <!-- Milestones -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3 class="section-title">📅 Marcos do Projeto</h3>
+                            </div>
+                            <div class="section-body">
+                                <ul class="milestone-list" id="detailMilestones">
+                                    <li class="milestone-item">
+                                        <div class="milestone-date">-</div>
+                                        <div class="milestone-content">
+                                            <div class="milestone-name">Nenhum marco cadastrado</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Risks -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3 class="section-title">⚠️ Riscos do Projeto</h3>
+                            </div>
+                            <div class="section-body">
+                                <ul class="risk-list" id="detailRisks">
+                                    <li class="risk-item">
+                                        <span style="color: var(--gray-500)">Nenhum risco cadastrado</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Historical Evolution -->
+                    <div class="section-card" style="margin-top: var(--spacing-lg);">
+                        <div class="section-header">
+                            <h3 class="section-title">📈 Evolução Histórica</h3>
+                        </div>
+                        <div class="section-body">
+                            <div class="history-timeline" id="detailHistory">
+                                <div class="history-item">
+                                    <div class="history-date">-</div>
+                                    <div>Nenhum histórico disponível</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Update Project Modal -->
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Atualizar Projeto</h3>
+                <button class="modal-close" onclick="closeUpdateModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="updateForm">
+                    <div class="form-group">
+                        <label class="form-label">Selecionar Projeto *</label>
+                        <select class="form-select" id="modalProjectSelect" required onchange="loadProjectScores()">
+                            <option value="">Selecione um projeto...</option>
+                        </select>
+                    </div>
+
+                    <div id="scoreInputs" style="display: none;">
+                        <p style="font-size: 0.875rem; color: var(--gray-500); margin-bottom: var(--spacing-lg);">
+                            Insira os scores de 1 a 10 para cada dimensão. Scores mais altos indicam melhor desempenho.
+                        </p>
+
+                        <div class="score-input-group">
+                            <div class="score-input">
+                                <label class="form-label">📅 Cronograma</label>
+                                <input type="range" class="score-slider" id="scoreSchedule" min="1" max="10" value="5" oninput="updateScoreDisplay('schedule')">
+                                <div class="score-value" id="scheduleValue">5</div>
+                                <p style="font-size: 0.75rem; color: var(--gray-500); text-align: center;">
+                                    1 = Muito atrasado | 10 = Adiantado
+                                </p>
+                            </div>
+                            <div class="score-input">
+                                <label class="form-label">💰 Custo</label>
+                                <input type="range" class="score-slider" id="scoreCost" min="1" max="10" value="5" oninput="updateScoreDisplay('cost')">
+                                <div class="score-value" id="costValue">5</div>
+                                <p style="font-size: 0.75rem; color: var(--gray-500); text-align: center;">
+                                    1 = Muito acima | 10 = Abaixo do orçamento
+                                </p>
+                            </div>
+                            <div class="score-input">
+                                <label class="form-label">📐 Escopo</label>
+                                <input type="range" class="score-slider" id="scoreScope" min="1" max="10" value="5" oninput="updateScoreDisplay('scope')">
+                                <div class="score-value" id="scopeValue">5</div>
+                                <p style="font-size: 0.75rem; color: var(--gray-500); text-align: center;">
+                                    1 = Muitas mudanças | 10 = Estável
+                                </p>
+                            </div>
+                            <div class="score-input">
+                                <label class="form-label">⚠️ Risco</label>
+                                <input type="range" class="score-slider" id="scoreRisk" min="1" max="10" value="5" oninput="updateScoreDisplay('risk')">
+                                <div class="score-value" id="riskValue">5</div>
+                                <p style="font-size: 0.75rem; color: var(--gray-500); text-align: center;">
+                                    1 = Crítico | 10 = Sob controle
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: var(--spacing-lg);">
+                            <label class="form-label">📊 Progresso (%)</label>
+                            <input type="range" class="score-slider" id="progressInput" min="0" max="100" value="0" oninput="updateProgressDisplay()">
+                            <div class="score-value" id="progressValue">0%</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUpdateModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveProjectUpdate()">Salvar Atualização</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div class="modal-overlay" id="addProjectModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Adicionar Novo Projeto</h3>
+                <button class="modal-close" onclick="closeAddProjectModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="addProjectForm">
+                    <div class="form-group">
+                        <label class="form-label">Nome do Projeto *</label>
+                        <input type="text" class="form-input" id="newProjectName" required placeholder="Ex: Modernização Sistema ERP">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo do Projeto *</label>
+                        <select class="form-select" id="newProjectType" required>
+                            <option value="">Selecione...</option>
+                            <option value="strategic">Estratégico / Estruturante</option>
+                            <option value="medium">Médio</option>
+                            <option value="small">Pequeno</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Orçamento Planejado (R$)</label>
+                        <input type="number" class="form-input" id="newProjectBudget" placeholder="Ex: 500000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gerente do Projeto</label>
+                        <input type="text" class="form-input" id="newProjectManager" placeholder="Ex: João Silva">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddProjectModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="addNewProject()">Criar Projeto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Add Button -->
+    <button class="add-project-btn" onclick="openAddProjectModal()" title="Adicionar Projeto">+</button>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Dados salvos com sucesso!</div>
+
+    <script>
+    /*
+    ========================================
+    IPIRANGA PMO DASHBOARD - JAVASCRIPT
+    ========================================
+
+    PMO SCORING ENGINE DOCUMENTATION
+    ================================
+
+    The scoring system is based on four dimensions:
+    1. Schedule (Cronograma) - 1 to 10
+    2. Cost (Custo) - 1 to 10
+    3. Scope (Escopo) - 1 to 10
+    4. Risk (Risco) - 1 to 10
+
+    HEALTH CALCULATION:
+    - Project Health = (Schedule + Cost + Scope + Risk) / 4
+    - Strategic projects have a weight multiplier of 1.5x in portfolio calculations
+
+    THRESHOLDS (Documented and Explicit):
+    - GREEN (Healthy): Average Score >= 7.0 (70%+)
+    - YELLOW (Warning): Average Score >= 5.0 and < 7.0 (50-69%)
+    - RED (Critical): Average Score < 5.0 (Below 50%)
+
+    PORTFOLIO HEALTH:
+    - Weighted average of all project health scores
+    - Strategic projects count 1.5x
+    - Medium projects count 1.0x
+    - Small projects count 0.5x
+
+    STATUS IS ALWAYS CALCULATED, NEVER MANUALLY SET.
+    */
+
+    // ========================================
+    // DATA MODEL
+    // ========================================
+
+    const DEFAULT_PROJECTS = [
+        {
+            id: 1,
+            name: "Transformação Digital - Postos",
+            type: "strategic",
+            manager: "Carlos Mendes",
+            plannedBudget: 5000000,
+            actualCost: 4800000,
+            progress: 65,
+            scores: {
+                schedule: 8,
+                cost: 7,
+                scope: 8,
+                risk: 6
+            },
+            milestones: [
+                { date: "2025-01-15", name: "Kick-off", status: "completed" },
+                { date: "2025-04-30", name: "Fase 1 - Análise", status: "completed" },
+                { date: "2025-08-15", name: "Fase 2 - Desenvolvimento", status: "in-progress" },
+                { date: "2025-12-01", name: "Fase 3 - Implantação", status: "pending" }
+            ],
+            risks: [
+                { level: "medium", description: "Integração com sistemas legados" },
+                { level: "low", description: "Capacitação de equipe" }
+            ],
+            history: [
+                { date: "2025-12-01", schedule: 8, cost: 7, scope: 8, risk: 6 },
+                { date: "2025-11-01", schedule: 7, cost: 7, scope: 7, risk: 5 },
+                { date: "2025-10-01", schedule: 6, cost: 8, scope: 7, risk: 5 }
+            ]
+        },
+        {
+            id: 2,
+            name: "Nova Plataforma de Fidelidade",
+            type: "strategic",
+            manager: "Ana Paula Costa",
+            plannedBudget: 3500000,
+            actualCost: 3200000,
+            progress: 45,
+            scores: {
+                schedule: 6,
+                cost: 8,
+                scope: 7,
+                risk: 5
+            },
+            milestones: [
+                { date: "2025-02-01", name: "Definição de Escopo", status: "completed" },
+                { date: "2025-06-30", name: "MVP", status: "in-progress" },
+                { date: "2025-11-30", name: "Lançamento", status: "pending" }
+            ],
+            risks: [
+                { level: "high", description: "Prazo agressivo para lançamento" },
+                { level: "medium", description: "Dependência de parceiros externos" }
+            ],
+            history: [
+                { date: "2025-12-01", schedule: 6, cost: 8, scope: 7, risk: 5 },
+                { date: "2025-11-01", schedule: 7, cost: 8, scope: 7, risk: 6 }
+            ]
+        },
+        {
+            id: 3,
+            name: "Otimização Logística",
+            type: "medium",
+            manager: "Roberto Almeida",
+            plannedBudget: 1200000,
+            actualCost: 1350000,
+            progress: 80,
+            scores: {
+                schedule: 9,
+                cost: 5,
+                scope: 8,
+                risk: 7
+            },
+            milestones: [
+                { date: "2025-01-10", name: "Diagnóstico", status: "completed" },
+                { date: "2025-05-15", name: "Implementação", status: "completed" },
+                { date: "2025-10-01", name: "Go-Live", status: "in-progress" }
+            ],
+            risks: [
+                { level: "medium", description: "Estouro de orçamento em 12.5%" }
+            ],
+            history: [
+                { date: "2025-12-01", schedule: 9, cost: 5, scope: 8, risk: 7 },
+                { date: "2025-11-01", schedule: 9, cost: 6, scope: 8, risk: 7 }
+            ]
+        },
+        {
+            id: 4,
+            name: "Automação de Relatórios",
+            type: "small",
+            manager: "Lucia Santos",
+            plannedBudget: 150000,
+            actualCost: 140000,
+            progress: 100,
+            scores: {
+                schedule: 10,
+                cost: 9,
+                scope: 10,
+                risk: 9
+            },
+            milestones: [
+                { date: "2025-03-01", name: "Início", status: "completed" },
+                { date: "2025-05-30", name: "Conclusão", status: "completed" }
+            ],
+            risks: [],
+            history: [
+                { date: "2025-06-01", schedule: 10, cost: 9, scope: 10, risk: 9 }
+            ]
+        },
+        {
+            id: 5,
+            name: "Upgrade Infraestrutura TI",
+            type: "medium",
+            manager: "Fernando Lima",
+            plannedBudget: 800000,
+            actualCost: 750000,
+            progress: 55,
+            scores: {
+                schedule: 5,
+                cost: 8,
+                scope: 6,
+                risk: 4
+            },
+            milestones: [
+                { date: "2025-02-15", name: "Planejamento", status: "completed" },
+                { date: "2025-07-01", name: "Migração Fase 1", status: "in-progress" },
+                { date: "2025-12-15", name: "Conclusão", status: "pending" }
+            ],
+            risks: [
+                { level: "high", description: "Risco de downtime em sistemas críticos" },
+                { level: "high", description: "Atraso na entrega de equipamentos" }
+            ],
+            history: [
+                { date: "2025-12-01", schedule: 5, cost: 8, scope: 6, risk: 4 },
+                { date: "2025-11-01", schedule: 6, cost: 8, scope: 7, risk: 5 }
+            ]
+        },
+        {
+            id: 6,
+            name: "App Mobile - Melhorias",
+            type: "small",
+            manager: "Mariana Oliveira",
+            plannedBudget: 200000,
+            actualCost: 180000,
+            progress: 70,
+            scores: {
+                schedule: 7,
+                cost: 8,
+                scope: 7,
+                risk: 8
+            },
+            milestones: [
+                { date: "2025-04-01", name: "Sprint 1", status: "completed" },
+                { date: "2025-08-01", name: "Sprint 2", status: "completed" },
+                { date: "2025-11-01", name: "Release", status: "in-progress" }
+            ],
+            risks: [
+                { level: "low", description: "Ajustes de UX solicitados" }
+            ],
+            history: [
+                { date: "2025-12-01", schedule: 7, cost: 8, scope: 7, risk: 8 }
+            ]
+        },
+        {
+            id: 7,
+            name: "Expansão Rede Norte",
+            type: "strategic",
+            manager: "Pedro Henrique",
+            plannedBudget: 8000000,
+            actualCost: 9500000,
+            progress: 30,
+            scores: {
+                schedule: 4,
+                cost: 3,
+                scope: 5,
+                risk: 3
+            },
+            milestones: [
+                { date: "2025-01-01", name: "Planejamento Estratégico", status: "completed" },
+                { date: "2025-06-30", name: "Licenciamentos", status: "delayed" },
+                { date: "2026-06-30", name: "Inauguração", status: "pending" }
+            ],
+            risks: [
+                { level: "high", description: "Atraso em licenciamentos ambientais" },
+                { level: "high", description: "Estouro de orçamento de 18.75%" },
+                { level: "high", description: "Problemas com fornecedores locais" }
+            ],
+            history: [
+                { date: "2025-12-01", schedule: 4, cost: 3, scope: 5, risk: 3 },
+                { date: "2025-11-01", schedule: 5, cost: 4, scope: 5, risk: 4 },
+                { date: "2025-10-01", schedule: 6, cost: 5, scope: 6, risk: 5 }
+            ]
+        }
+    ];
+
+    // ========================================
+    // SCORING ENGINE - THRESHOLDS
+    // ========================================
+
+    const THRESHOLDS = {
+        GREEN: 7.0,    // Score >= 7.0 = Healthy
+        YELLOW: 5.0,   // Score >= 5.0 and < 7.0 = Warning
+        // Below 5.0 = Critical (RED)
+    };
+
+    const TYPE_WEIGHTS = {
+        strategic: 1.5,
+        medium: 1.0,
+        small: 0.5
+    };
+
+    // ========================================
+    // LOCAL STORAGE MANAGEMENT
+    // ========================================
+
+    function loadProjects() {
+        const stored = localStorage.getItem('ipiranga_pmo_projects');
+        if (stored) {
+            return JSON.parse(stored);
+        }
+        // Initialize with default data
+        saveProjects(DEFAULT_PROJECTS);
+        return DEFAULT_PROJECTS;
+    }
+
+    function saveProjects(projects) {
+        localStorage.setItem('ipiranga_pmo_projects', JSON.stringify(projects));
+    }
+
+    function getProjects() {
+        return loadProjects();
+    }
+
+    // ========================================
+    // SCORING ENGINE - CALCULATIONS
+    // ========================================
+
+    /**
+     * Calculate individual project health score
+     * @param {Object} scores - Object with schedule, cost, scope, risk scores (1-10)
+     * @returns {number} Average score (1-10)
+     */
+    function calculateProjectHealth(scores) {
+        const { schedule, cost, scope, risk } = scores;
+        return (schedule + cost + scope + risk) / 4;
+    }
+
+    /**
+     * Determine status color based on health score
+     * Uses explicit thresholds defined in THRESHOLDS constant
+     * @param {number} healthScore - Score from 1-10
+     * @returns {string} 'green', 'yellow', or 'red'
+     */
+    function getStatusFromScore(healthScore) {
+        if (healthScore >= THRESHOLDS.GREEN) return 'green';
+        if (healthScore >= THRESHOLDS.YELLOW) return 'yellow';
+        return 'red';
+    }
+
+    /**
+     * Calculate weighted portfolio health
+     * Strategic projects have 1.5x weight, Medium 1.0x, Small 0.5x
+     * @param {Array} projects - Array of project objects
+     * @returns {number} Weighted average health (0-100 percentage)
+     */
+    function calculatePortfolioHealth(projects) {
+        if (projects.length === 0) return 0;
+
+        let totalWeightedScore = 0;
+        let totalWeight = 0;
+
+        projects.forEach(project => {
+            const health = calculateProjectHealth(project.scores);
+            const weight = TYPE_WEIGHTS[project.type] || 1.0;
+            totalWeightedScore += health * weight;
+            totalWeight += weight;
+        });
+
+        // Convert to percentage (health is 1-10, so multiply by 10)
+        return Math.round((totalWeightedScore / totalWeight) * 10);
+    }
+
+    /**
+     * Count projects by status
+     * @param {Array} projects - Array of project objects
+     * @returns {Object} Counts for green, yellow, red
+     */
+    function countByStatus(projects) {
+        const counts = { green: 0, yellow: 0, red: 0 };
+        projects.forEach(project => {
+            const health = calculateProjectHealth(project.scores);
+            const status = getStatusFromScore(health);
+            counts[status]++;
+        });
+        return counts;
+    }
+
+    /**
+     * Count projects by type
+     * @param {Array} projects - Array of project objects
+     * @returns {Object} Counts for strategic, medium, small
+     */
+    function countByType(projects) {
+        const counts = { strategic: 0, medium: 0, small: 0 };
+        projects.forEach(project => {
+            counts[project.type]++;
+        });
+        return counts;
+    }
+
+    /**
+     * Calculate schedule adherence across portfolio
+     * @param {Array} projects - Array of project objects
+     * @returns {number} Average schedule score as percentage
+     */
+    function calculateScheduleAdherence(projects) {
+        if (projects.length === 0) return 0;
+        const totalSchedule = projects.reduce((sum, p) => sum + p.scores.schedule, 0);
+        return Math.round((totalSchedule / projects.length) * 10);
+    }
+
+    /**
+     * Calculate average financial deviation
+     * @param {Array} projects - Array of project objects
+     * @returns {number} Average deviation percentage
+     */
+    function calculateFinancialDeviation(projects) {
+        if (projects.length === 0) return 0;
+        const projectsWithBudget = projects.filter(p => p.plannedBudget > 0);
+        if (projectsWithBudget.length === 0) return 0;
+
+        const totalDeviation = projectsWithBudget.reduce((sum, p) => {
+            const deviation = ((p.actualCost - p.plannedBudget) / p.plannedBudget) * 100;
+            return sum + deviation;
+        }, 0);
+
+        return Math.round(totalDeviation / projectsWithBudget.length * 10) / 10;
+    }
+
+    /**
+     * Get all critical risks across portfolio
+     * @param {Array} projects - Array of project objects
+     * @returns {Array} Array of risk objects with project info
+     */
+    function getCriticalRisks(projects) {
+        const criticalRisks = [];
+        projects.forEach(project => {
+            project.risks.forEach(risk => {
+                if (risk.level === 'high') {
+                    criticalRisks.push({
+                        ...risk,
+                        projectName: project.name,
+                        projectId: project.id
+                    });
+                }
+            });
+        });
+        return criticalRisks;
+    }
+
+    // ========================================
+    // UI RENDERING FUNCTIONS
+    // ========================================
+
+    function renderDashboard() {
+        const projects = getProjects();
+        renderExecutiveLayer(projects);
+        renderTacticalLayer(projects);
+        renderAnalyticalLayer(projects);
+        populateProjectSelects(projects);
+    }
+
+    function renderExecutiveLayer(projects) {
+        // Portfolio Health
+        const portfolioHealth = calculatePortfolioHealth(projects);
+        const portfolioStatus = getStatusFromScore(portfolioHealth / 10);
+
+        const healthIndicator = document.getElementById('portfolioHealthIndicator');
+        healthIndicator.className = `health-indicator ${portfolioStatus}`;
+        healthIndicator.querySelector('.health-score').textContent = `${portfolioHealth}%`;
+
+        // Status counts
+        const statusCounts = countByStatus(projects);
+        document.getElementById('greenCount').textContent = statusCounts.green;
+        document.getElementById('yellowCount').textContent = statusCounts.yellow;
+        document.getElementById('redCount').textContent = statusCounts.red;
+
+        // Type counts
+        const typeCounts = countByType(projects);
+        document.getElementById('strategicCount').textContent = typeCounts.strategic;
+        document.getElementById('mediumCount').textContent = typeCounts.medium;
+        document.getElementById('smallCount').textContent = typeCounts.small;
+        document.getElementById('totalProjects').textContent = projects.length;
+
+        // Schedule Adherence
+        const scheduleAdherence = calculateScheduleAdherence(projects);
+        document.getElementById('scheduleAdherence').textContent = `${scheduleAdherence}%`;
+        const scheduleTrend = document.getElementById('scheduleTrend');
+        scheduleTrend.textContent = scheduleAdherence >= 70 ? '✓ No prazo' : '⚠ Atenção';
+        scheduleTrend.className = `kpi-trend ${scheduleAdherence >= 70 ? 'positive' : 'negative'}`;
+
+        // Financial Deviation
+        const financialDeviation = calculateFinancialDeviation(projects);
+        document.getElementById('financialDeviation').textContent = `${financialDeviation > 0 ? '+' : ''}${financialDeviation}%`;
+        const financialTrend = document.getElementById('financialTrend');
+        financialTrend.textContent = financialDeviation <= 5 ? '✓ Sob controle' : '⚠ Desvio';
+        financialTrend.className = `kpi-trend ${financialDeviation <= 5 ? 'positive' : 'negative'}`;
+
+        // Average Risk Score
+        const avgRisk = projects.length > 0 
+            ? Math.round(projects.reduce((sum, p) => sum + p.scores.risk, 0) / projects.length * 10) / 10
+            : 0;
+        document.getElementById('avgRiskScore').textContent = avgRisk.toFixed(1);
+        const riskTrend = document.getElementById('riskTrend');
+        riskTrend.textContent = avgRisk >= 6 ? '✓ Controlado' : '⚠ Monitorar';
+        riskTrend.className = `kpi-trend ${avgRisk >= 6 ? 'positive' : 'negative'}`;
+
+        // Average Progress
+        const avgProgress = projects.length > 0
+            ? Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / projects.length)
+            : 0;
+        document.getElementById('avgProgress').textContent = `${avgProgress}%`;
+
+        // Critical Risks
+        const criticalRisks = getCriticalRisks(projects);
+        document.getElementById('riskCount').textContent = `${criticalRisks.length} riscos críticos`;
+
+        const risksList = document.getElementById('criticalRisksList');
+        if (criticalRisks.length > 0) {
+            risksList.innerHTML = criticalRisks.map(risk => `
+                <li class="risk-item">
+                    <span class="risk-level high"></span>
+                    <div class="risk-content">
+                        <div class="risk-description">${risk.description}</div>
+                        <div class="risk-project">${risk.projectName}</div>
+                    </div>
+                </li>
+            `).join('');
+        } else {
+            risksList.innerHTML = `
+                <li class="risk-item">
+                    <span style="color: var(--gray-500)">✓ Nenhum risco crítico identificado</span>
+                </li>
+            `;
+        }
+
+        // Strategic Projects Table
+        const strategicProjects = projects.filter(p => p.type === 'strategic');
+        const strategicTable = document.getElementById('strategicProjectsTable');
+
+        if (strategicProjects.length > 0) {
+            strategicTable.innerHTML = strategicProjects.map(project => {
+                const health = calculateProjectHealth(project.scores);
+                const status = getStatusFromScore(health);
+                const statusLabels = { green: 'Saudável', yellow: 'Atenção', red: 'Crítico' };
+
+                return `
+                    <tr class="strategic clickable-row" onclick="viewProjectDetail(${project.id})">
+                        <td>
+                            <div class="project-name">⭐ ${project.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--gray-500)">${project.manager}</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="progress-bar" style="width: 100px;">
+                                    <div class="progress-fill ${status}" style="width: ${project.progress}%"></div>
+                                </div>
+                                <span>${project.progress}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge ${status}">
+                                <span class="status-icon ${status}"></span>
+                                ${statusLabels[status]}
+                            </span>
+                        </td>
+                        <td>${project.scores.risk}/10</td>
+                    </tr>
+                `;
+            }).join('');
+        } else {
+            strategicTable.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--gray-500);">
+                        Nenhum projeto estratégico cadastrado
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderTacticalLayer(projects) {
+        const filterType = document.getElementById('filterType').value;
+        const filterStatus = document.getElementById('filterStatus').value;
+
+        let filteredProjects = [...projects];
+
+        if (filterType !== 'all') {
+            filteredProjects = filteredProjects.filter(p => p.type === filterType);
+        }
+
+        if (filterStatus !== 'all') {
+            filteredProjects = filteredProjects.filter(p => {
+                const health = calculateProjectHealth(p.scores);
+                return getStatusFromScore(health) === filterStatus;
+            });
+        }
+
+        // Sort: Strategic first, then by health score descending
+        filteredProjects.sort((a, b) => {
+            if (a.type === 'strategic' && b.type !== 'strategic') return -1;
+            if (a.type !== 'strategic' && b.type === 'strategic') return 1;
+            return calculateProjectHealth(b.scores) - calculateProjectHealth(a.scores);
+        });
+
+        document.getElementById('projectListCount').textContent = `${filteredProjects.length} projetos`;
+
+        const typeLabels = { strategic: 'Estratégico', medium: 'Médio', small: 'Pequeno' };
+        const statusLabels = { green: 'Saudável', yellow: 'Atenção', red: 'Crítico' };
+
+        const fullTable = document.getElementById('fullProjectTable');
+        if (filteredProjects.length > 0) {
+            fullTable.innerHTML = filteredProjects.map(project => {
+                const health = calculateProjectHealth(project.scores);
+                const status = getStatusFromScore(health);
+
+                return `
+                    <tr class="${project.type === 'strategic' ? 'strategic' : ''} clickable-row" onclick="viewProjectDetail(${project.id})">
+                        <td>
+                            <div class="project-name">${project.type === 'strategic' ? '⭐ ' : ''}${project.name}</div>
+                        </td>
+                        <td>
+                            <span class="project-type ${project.type}">${typeLabels[project.type]}</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="progress-bar" style="width: 60px;">
+                                    <div class="progress-fill ${status}" style="width: ${project.progress}%"></div>
+                                </div>
+                                <span>${project.progress}%</span>
+                            </div>
+                        </td>
+                        <td>${project.scores.schedule}/10</td>
+                        <td>${project.scores.cost}/10</td>
+                        <td>${project.scores.scope}/10</td>
+                        <td>${project.scores.risk}/10</td>
+                        <td>
+                            <span class="status-badge ${status}">
+                                <span class="status-icon ${status}"></span>
+                                ${statusLabels[status]}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        } else {
+            fullTable.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; color: var(--gray-500);">
+                        Nenhum projeto encontrado com os filtros aplicados
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Cost Analysis Table
+        const costTable = document.getElementById('costAnalysisTable');
+        const projectsWithBudget = filteredProjects.filter(p => p.plannedBudget > 0);
+
+        if (projectsWithBudget.length > 0) {
+            costTable.innerHTML = projectsWithBudget.map(project => {
+                const deviation = ((project.actualCost - project.plannedBudget) / project.plannedBudget * 100).toFixed(1);
+                const deviationNum = parseFloat(deviation);
+                const costStatus = deviationNum <= 0 ? 'green' : deviationNum <= 10 ? 'yellow' : 'red';
+                const costStatusLabel = deviationNum <= 0 ? 'Sob controle' : deviationNum <= 10 ? 'Atenção' : 'Crítico';
+
+                return `
+                    <tr class="${project.type === 'strategic' ? 'strategic' : ''}">
+                        <td>
+                            <div class="project-name">${project.type === 'strategic' ? '⭐ ' : ''}${project.name}</div>
+                        </td>
+                        <td>R$ ${project.plannedBudget.toLocaleString('pt-BR')}</td>
+                        <td>R$ ${project.actualCost.toLocaleString('pt-BR')}</td>
+                        <td style="color: ${deviationNum > 0 ? 'var(--status-red)' : 'var(--status-green)'}">
+                            ${deviationNum > 0 ? '+' : ''}${deviation}%
+                        </td>
+                        <td>
+                            <span class="status-badge ${costStatus}">
+                                <span class="status-icon ${costStatus}"></span>
+                                ${costStatusLabel}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        } else {
+            costTable.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--gray-500);">
+                        Nenhum projeto com orçamento definido
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderAnalyticalLayer(projects) {
+        const select = document.getElementById('projectDetailSelect');
+        select.innerHTML = '<option value="">Selecione um projeto...</option>';
+
+        // Sort projects: strategic first
+        const sortedProjects = [...projects].sort((a, b) => {
+            if (a.type === 'strategic' && b.type !== 'strategic') return -1;
+            if (a.type !== 'strategic' && b.type === 'strategic') return 1;
+            return a.name.localeCompare(b.name);
+        });
+
+        sortedProjects.forEach(project => {
+            const option = document.createElement('option');
+            option.value = project.id;
+            option.textContent = `${project.type === 'strategic' ? '⭐ ' : ''}${project.name}`;
+            select.appendChild(option);
+        });
+    }
+
+    function populateProjectSelects(projects) {
+        const modalSelect = document.getElementById('modalProjectSelect');
+        modalSelect.innerHTML = '<option value="">Selecione um projeto...</option>';
+
+        const sortedProjects = [...projects].sort((a, b) => {
+            if (a.type === 'strategic' && b.type !== 'strategic') return -1;
+            if (a.type !== 'strategic' && b.type === 'strategic') return 1;
+            return a.name.localeCompare(b.name);
+        });
+
+        sortedProjects.forEach(project => {
+            const option = document.createElement('option');
+            option.value = project.id;
+            option.textContent = `${project.type === 'strategic' ? '⭐ ' : ''}${project.name}`;
+            modalSelect.appendChild(option);
+        });
+    }
+
+    // ========================================
+    // PROJECT DETAIL VIEW
+    // ========================================
+
+    function showProjectDetail() {
+        const projectId = document.getElementById('projectDetailSelect').value;
+        if (!projectId) {
+            document.getElementById('projectDetailView').style.display = 'none';
+            return;
+        }
+
+        const projects = getProjects();
+        const project = projects.find(p => p.id === parseInt(projectId));
+
+        if (!project) return;
+
+        renderProjectDetail(project);
+        document.getElementById('projectDetailView').style.display = 'block';
+    }
+
+    function viewProjectDetail(projectId) {
+        // Switch to analytical layer
+        switchLayer('analytical');
+
+        // Set the select value and trigger detail view
+        document.getElementById('projectDetailSelect').value = projectId;
+        showProjectDetail();
+    }
+
+    function renderProjectDetail(project) {
+        const health = calculateProjectHealth(project.scores);
+        const status = getStatusFromScore(health);
+        const statusLabels = { green: 'Saudável', yellow: 'Atenção', red: 'Crítico' };
+        const typeLabels = { strategic: 'Estratégico', medium: 'Médio', small: 'Pequeno' };
+
+        document.getElementById('detailProjectName').textContent = project.name;
+
+        const typeEl = document.getElementById('detailProjectType');
+        typeEl.textContent = typeLabels[project.type];
+        typeEl.className = `project-type ${project.type}`;
+
+        const statusEl = document.getElementById('detailProjectStatus');
+        statusEl.innerHTML = `<span class="status-icon ${status}"></span>${statusLabels[status]}`;
+        statusEl.className = `status-badge ${status}`;
+
+        // Scores
+        const scores = project.scores;
+        document.getElementById('detailScheduleScore').textContent = `${scores.schedule}/10`;
+        document.getElementById('detailCostScore').textContent = `${scores.cost}/10`;
+        document.getElementById('detailScopeScore').textContent = `${scores.scope}/10`;
+        document.getElementById('detailRiskScore').textContent = `${scores.risk}/10`;
+
+        // Progress bars
+        ['schedule', 'cost', 'scope', 'risk'].forEach(dimension => {
+            const bar = document.getElementById(`detail${dimension.charAt(0).toUpperCase() + dimension.slice(1)}Bar`);
+            const scoreVal = scores[dimension];
+            const barStatus = getStatusFromScore(scoreVal);
+            bar.style.width = `${scoreVal * 10}%`;
+            bar.className = `progress-fill ${barStatus}`;
+        });
+
+        // Milestones
+        const milestonesEl = document.getElementById('detailMilestones');
+        if (project.milestones && project.milestones.length > 0) {
+            milestonesEl.innerHTML = project.milestones.map(m => {
+                const statusColors = {
+                    completed: 'var(--status-green)',
+                    'in-progress': 'var(--status-yellow)',
+                    pending: 'var(--gray-300)',
+                    delayed: 'var(--status-red)'
+                };
+                const statusIcons = {
+                    completed: '✓',
+                    'in-progress': '⏳',
+                    pending: '○',
+                    delayed: '⚠'
+                };
+                return `
+                    <li class="milestone-item">
+                        <div class="milestone-date">${formatDate(m.date)}</div>
+                        <div class="milestone-content">
+                            <div class="milestone-name">${m.name}</div>
+                            <div class="milestone-status" style="color: ${statusColors[m.status]}">
+                                ${statusIcons[m.status]} ${m.status === 'completed' ? 'Concluído' : m.status === 'in-progress' ? 'Em andamento' : m.status === 'delayed' ? 'Atrasado' : 'Pendente'}
+                            </div>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        } else {
+            milestonesEl.innerHTML = `
+                <li class="milestone-item">
+                    <div style="color: var(--gray-500)">Nenhum marco cadastrado</div>
+                </li>
+            `;
+        }
+
+        // Risks
+        const risksEl = document.getElementById('detailRisks');
+        if (project.risks && project.risks.length > 0) {
+            risksEl.innerHTML = project.risks.map(r => `
+                <li class="risk-item">
+                    <span class="risk-level ${r.level}"></span>
+                    <div class="risk-content">
+                        <div class="risk-description">${r.description}</div>
+                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: capitalize;">
+                            ${r.level === 'high' ? 'Alto' : r.level === 'medium' ? 'Médio' : 'Baixo'}
+                        </div>
+                    </div>
+                </li>
+            `).join('');
+        } else {
+            risksEl.innerHTML = `
+                <li class="risk-item">
+                    <span style="color: var(--status-green)">✓ Nenhum risco identificado</span>
+                </li>
+            `;
+        }
+
+        // History
+        const historyEl = document.getElementById('detailHistory');
+        if (project.history && project.history.length > 0) {
+            historyEl.innerHTML = project.history.map(h => `
+                <div class="history-item">
+                    <div class="history-date">${formatDate(h.date)}</div>
+                    <div class="history-scores">
+                        <span class="history-score">📅 ${h.schedule}</span>
+                        <span class="history-score">💰 ${h.cost}</span>
+                        <span class="history-score">📐 ${h.scope}</span>
+                        <span class="history-score">⚠️ ${h.risk}</span>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            historyEl.innerHTML = `
+                <div class="history-item">
+                    <div>Nenhum histórico disponível</div>
+                </div>
+            `;
+        }
+    }
+
+    // ========================================
+    // MODAL HANDLERS
+    // ========================================
+
+    function openUpdateModal() {
+        document.getElementById('updateModal').classList.add('active');
+        document.getElementById('scoreInputs').style.display = 'none';
+        document.getElementById('modalProjectSelect').value = '';
+    }
+
+    function closeUpdateModal() {
+        document.getElementById('updateModal').classList.remove('active');
+    }
+
+    function openAddProjectModal() {
+        document.getElementById('addProjectModal').classList.add('active');
+    }
+
+    function closeAddProjectModal() {
+        document.getElementById('addProjectModal').classList.remove('active');
+        document.getElementById('addProjectForm').reset();
+    }
+
+    function loadProjectScores() {
+        const projectId = document.getElementById('modalProjectSelect').value;
+        if (!projectId) {
+            document.getElementById('scoreInputs').style.display = 'none';
+            return;
+        }
+
+        const projects = getProjects();
+        const project = projects.find(p => p.id === parseInt(projectId));
+
+        if (project) {
+            document.getElementById('scoreSchedule').value = project.scores.schedule;
+            document.getElementById('scoreCost').value = project.scores.cost;
+            document.getElementById('scoreScope').value = project.scores.scope;
+            document.getElementById('scoreRisk').value = project.scores.risk;
+            document.getElementById('progressInput').value = project.progress;
+
+            updateScoreDisplay('schedule');
+            updateScoreDisplay('cost');
+            updateScoreDisplay('scope');
+            updateScoreDisplay('risk');
+            updateProgressDisplay();
+
+            document.getElementById('scoreInputs').style.display = 'block';
+        }
+    }
+
+    function updateScoreDisplay(dimension) {
+        const value = document.getElementById(`score${dimension.charAt(0).toUpperCase() + dimension.slice(1)}`).value;
+        document.getElementById(`${dimension}Value`).textContent = value;
+    }
+
+    function updateProgressDisplay() {
+        const value = document.getElementById('progressInput').value;
+        document.getElementById('progressValue').textContent = `${value}%`;
+    }
+
+    function saveProjectUpdate() {
+        const projectId = document.getElementById('modalProjectSelect').value;
+        if (!projectId) {
+            alert('Selecione um projeto');
+            return;
+        }
+
+        const projects = getProjects();
+        const projectIndex = projects.findIndex(p => p.id === parseInt(projectId));
+
+        if (projectIndex === -1) return;
+
+        const newScores = {
+            schedule: parseInt(document.getElementById('scoreSchedule').value),
+            cost: parseInt(document.getElementById('scoreCost').value),
+            scope: parseInt(document.getElementById('scoreScope').value),
+            risk: parseInt(document.getElementById('scoreRisk').value)
+        };
+
+        const newProgress = parseInt(document.getElementById('progressInput').value);
+
+        // Add to history
+        const today = new Date().toISOString().split('T')[0];
+        projects[projectIndex].history.unshift({
+            date: today,
+            ...newScores
+        });
+
+        // Keep only last 10 history entries
+        if (projects[projectIndex].history.length > 10) {
+            projects[projectIndex].history = projects[projectIndex].history.slice(0, 10);
+        }
+
+        // Update current scores
+        projects[projectIndex].scores = newScores;
+        projects[projectIndex].progress = newProgress;
+
+        // Save to LocalStorage
+        saveProjects(projects);
+
+        // Refresh dashboard
+        renderDashboard();
+
+        // Close modal and show toast
+        closeUpdateModal();
+        showToast('Projeto atualizado com sucesso!');
+    }
+
+    function addNewProject() {
+        const name = document.getElementById('newProjectName').value.trim();
+        const type = document.getElementById('newProjectType').value;
+        const budget = parseInt(document.getElementById('newProjectBudget').value) || 0;
+        const manager = document.getElementById('newProjectManager').value.trim() || 'A definir';
+
+        if (!name || !type) {
+            alert('Preencha o nome e tipo do projeto');
+            return;
+        }
+
+        const projects = getProjects();
+
+        const newProject = {
+            id: Math.max(...projects.map(p => p.id), 0) + 1,
+            name: name,
+            type: type,
+            manager: manager,
+            plannedBudget: budget,
+            actualCost: 0,
+            progress: 0,
+            scores: {
+                schedule: 5,
+                cost: 5,
+                scope: 5,
+                risk: 5
+            },
+            milestones: [],
+            risks: [],
+            history: [{
+                date: new Date().toISOString().split('T')[0],
+                schedule: 5,
+                cost: 5,
+                scope: 5,
+                risk: 5
+            }]
+        };
+
+        projects.push(newProject);
+        saveProjects(projects);
+
+        renderDashboard();
+        closeAddProjectModal();
+        showToast('Projeto criado com sucesso!');
+    }
+
+    // ========================================
+    // NAVIGATION & UTILITIES
+    // ========================================
+
+    function switchLayer(layer) {
+        // Update tabs
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.classList.remove('active');
+            if (tab.dataset.layer === layer) {
+                tab.classList.add('active');
+            }
+        });
+
+        // Update sections
+        document.querySelectorAll('.layer-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(`layer-${layer}`).classList.add('active');
+    }
+
+    function applyFilters() {
+        const projects = getProjects();
+        renderTacticalLayer(projects);
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    function exportData() {
+        const projects = getProjects();
+        const dataStr = JSON.stringify(projects, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+        const exportFileName = `ipiranga_pmo_export_${new Date().toISOString().split('T')[0]}.json`;
+
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileName);
+        linkElement.click();
+
+        showToast('Dados exportados com sucesso!');
+    }
+
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderDashboard();
+    });
+
+    // Close modals when clicking overlay
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    });
+    </script>
+</body>
+</html>
