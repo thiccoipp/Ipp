@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Torre • GitHub JSON</title>
+  <style>
+    :root{--y:#FFD100;--b:#0045B5;--o:#FF6900;--bg:#0b1220;--card:#111827;--line:#24324a;--txt:#e7eefc;--muted:#9ab0d6}
+    *{box-sizing:border-box} body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#0b1220,#101827);color:var(--txt)}
+    .wrap{max-width:1700px;margin:0 auto;padding:18px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .title h1{margin:0;font-size:28px}.title p{margin:6px 0 0;color:var(--muted)}
+    .box{background:rgba(17,24,39,.92);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 32px rgba(0,0,0,.28)}
+    .toolbar{padding:14px;display:grid;grid-template-columns:2fr repeat(4,1fr) auto auto;gap:10px;align-items:end}
+    .field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase}
+    input,select,textarea{width:100%;padding:11px 12px;background:#09111f;border:1px solid var(--line);border-radius:12px;color:var(--txt)}
+    textarea{min-height:74px;resize:vertical}
+    button{padding:11px 14px;border:none;border-radius:12px;cursor:pointer;font-weight:800}
+    .primary{background:linear-gradient(135deg,var(--b),#1767ff);color:#fff}.secondary{background:rgba(255,255,255,.06);color:#fff;border:1px solid var(--line)}.warn{background:linear-gradient(135deg,var(--o),#ff8f1f);color:#fff}
+    .meta{padding:0 14px 14px;color:var(--muted);font-size:13px}
+    .table-wrap{overflow:auto;max-height:65vh}
+    table{width:100%;min-width:1800px;border-collapse:collapse} thead th{position:sticky;top:0;background:#0a1322;color:var(--muted);font-size:12px;text-transform:uppercase;padding:10px;border-bottom:1px solid var(--line);text-align:left}
+    tbody td{padding:8px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top} tbody tr:hover{background:rgba(255,255,255,.02)}
+    .cell-input{min-width:140px}.cell-text{min-width:260px}
+    .status{padding:12px 14px;font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="title">
+      <h1>Admin Torre • GitHub JSON</h1>
+      <p>Edite a base oficial (<code>data/torre_base.json</code>) e salve no GitHub via Worker seguro.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button id="btnReload" class="secondary">Recarregar</button>
+      <button id="btnAdd" class="warn">Adicionar linha</button>
+      <button id="btnSave" class="primary">Salvar no GitHub</button>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="toolbar">
+      <div class="field"><label>Busca</label><input id="q" placeholder="CNPJ, razão, analista, motivo, GN..." /></div>
+      <div class="field"><label>Analista</label><select id="fAnalista"><option value="">Todos</option></select></div>
+      <div class="field"><label>Motivo</label><select id="fMotivo"><option value="">Todos</option></select></div>
+      <div class="field"><label>GN</label><select id="fGn"><option value="">Todos</option></select></div>
+      <div class="field"><label>Worker URL</label><input id="workerUrl" placeholder="https://SEU-WORKER.workers.dev" /></div>
+      <div class="field"><label>Admin Key</label><input id="adminKey" type="password" placeholder="chave do worker" /></div>
+      <button id="btnClear" class="secondary">Limpar filtros</button>
+    </div>
+    <div class="meta">Campos principais editáveis. O dashboard pode continuar lendo o <strong>XLSX</strong> gerado automaticamente.</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Analista</th><th>Sub Classificação</th><th>Motivo</th><th>CNPJ</th><th>Razão Social</th><th>Descrição</th><th>FCR</th><th>Área</th><th>Origem</th><th>Tipo</th><th>Data Inicio</th><th>Data Fim</th><th>GN</th><th>Solicitante</th><th>Título</th><th>Motivo Encerramento</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="status" id="status">Pronto.</div>
+  </div>
+</div>
+<script>
+const DEFAULT_REMOTE = [
+  'https://cdn.jsdelivr.net/gh/thiccoipp/Ipp@main/data/torre_base.json',
+  'https://raw.githubusercontent.com/thiccoipp/Ipp/main/data/torre_base.json'
+];
+const STORE = 'torre_admin_cfg_v1';
+const state = { rows: [], filtered: [] };
+const $ = id => document.getElementById(id);
+const cols = [
+  'Analista','Sub Classificação','Motivo','CNPJ','Razão Social','Descrição','FCR','Area responsavel pela resolução','Origem do contato','Tipo de contato','Data Inicio','Data Fim','GN','Solicitante','Título','Motivo de encerramento'
+];
+function escapeHtml(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function saveCfg(){localStorage.setItem(STORE, JSON.stringify({workerUrl:$('workerUrl').value, adminKey:$('adminKey').value}))}
+function loadCfg(){try{const v=JSON.parse(localStorage.getItem(STORE)||'{}'); $('workerUrl').value=v.workerUrl||''; $('adminKey').value=v.adminKey||'';}catch(e){}}
+async function loadRemote(){
+  let lastErr='';
+  for(const url of DEFAULT_REMOTE){
+    try{
+      const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status);
+      state.rows=await r.json();
+      setStatus('Base carregada: '+url, false); populateFilters(); applyFilters(); return;
+    }catch(e){lastErr=e.message;}
+  }
+  setStatus('Falha ao carregar base remota: '+lastErr, true);
+}
+function uniq(vals){return [...new Set(vals.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'pt-BR'))}
+function populateFilters(){
+  fillSel('fAnalista', uniq(state.rows.map(r=>r['Analista'])));
+  fillSel('fMotivo', uniq(state.rows.map(r=>r['Motivo'])));
+  fillSel('fGn', uniq(state.rows.map(r=>r['GN'])));
+}
+function fillSel(id, items){ const sel=$(id); const first=sel.options[0].outerHTML; sel.innerHTML=first+items.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('') }
+function applyFilters(){
+  const q=$('q').value.trim().toLowerCase(); const a=$('fAnalista').value; const m=$('fMotivo').value; const g=$('fGn').value;
+  state.filtered = state.rows.filter(r=>{
+    if(a && (r['Analista']||'')!==a) return false;
+    if(m && (r['Motivo']||'')!==m) return false;
+    if(g && (r['GN']||'')!==g) return false;
+    if(q){ const hay=Object.values(r).join(' ').toLowerCase(); if(!hay.includes(q)) return false; }
+    return true;
+  });
+  renderTable();
+}
+function renderTable(){
+  const tb=$('tbody');
+  tb.innerHTML = state.filtered.map((r,idx)=>`
+  <tr>
+    <td>${idx+1}</td>
+    <td><input class="cell-input" data-col="Analista" data-idx="${r.__idx}" value="${escapeHtml(r['Analista']||'')}" /></td>
+    <td><input class="cell-input" data-col="Sub Classificação" data-idx="${r.__idx}" value="${escapeHtml(r['Sub Classificação']||'')}" /></td>
+    <td><input class="cell-input" data-col="Motivo" data-idx="${r.__idx}" value="${escapeHtml(r['Motivo']||'')}" /></td>
+    <td><input class="cell-input" data-col="CNPJ" data-idx="${r.__idx}" value="${escapeHtml(r['CNPJ']||'')}" /></td>
+    <td><input class="cell-input" data-col="Razão Social" data-idx="${r.__idx}" value="${escapeHtml(r['Razão Social']||'')}" /></td>
+    <td><textarea class="cell-text" data-col="Descrição" data-idx="${r.__idx}">${escapeHtml(r['Descrição']||'')}</textarea></td>
+    <td><input class="cell-input" data-col="FCR" data-idx="${r.__idx}" value="${escapeHtml(r['FCR']||'')}" /></td>
+    <td><input class="cell-input" data-col="Area responsavel pela resolução" data-idx="${r.__idx}" value="${escapeHtml(r['Area responsavel pela resolução']||'')}" /></td>
+    <td><input class="cell-input" data-col="Origem do contato" data-idx="${r.__idx}" value="${escapeHtml(r['Origem do contato']||'')}" /></td>
+    <td><input class="cell-input" data-col="Tipo de contato" data-idx="${r.__idx}" value="${escapeHtml(r['Tipo de contato']||'')}" /></td>
+    <td><input class="cell-input" data-col="Data Inicio" data-idx="${r.__idx}" value="${escapeHtml(r['Data Inicio']||'')}" /></td>
+    <td><input class="cell-input" data-col="Data Fim" data-idx="${r.__idx}" value="${escapeHtml(r['Data Fim']||'')}" /></td>
+    <td><input class="cell-input" data-col="GN" data-idx="${r.__idx}" value="${escapeHtml(r['GN']||'')}" /></td>
+    <td><input class="cell-input" data-col="Solicitante" data-idx="${r.__idx}" value="${escapeHtml(r['Solicitante']||'')}" /></td>
+    <td><input class="cell-input" data-col="Título" data-idx="${r.__idx}" value="${escapeHtml(r['Título']||'')}" /></td>
+    <td><input class="cell-input" data-col="Motivo de encerramento" data-idx="${r.__idx}" value="${escapeHtml(r['Motivo de encerramento']||'')}" /></td>
+    <td><button class="secondary" data-del="${r.__idx}">Excluir</button></td>
+  </tr>`).join('');
+
+  tb.querySelectorAll('input[data-col],textarea[data-col]').forEach(el=>{
+    el.addEventListener('change', e=>{
+      const i=+e.target.dataset.idx; const c=e.target.dataset.col; state.rows[i][c]=e.target.value;
+    });
+  });
+  tb.querySelectorAll('button[data-del]').forEach(btn=>btn.addEventListener('click', e=>{
+    const i=+e.target.dataset.del; state.rows.splice(i,1); reindex(); populateFilters(); applyFilters();
+  }));
+}
+function reindex(){ state.rows = state.rows.map((r,i)=>({...r,__idx:i})); }
+function addRow(){ const row={__idx:state.rows.length}; cols.forEach(c=>row[c]=''); state.rows.unshift(row); reindex(); populateFilters(); applyFilters(); }
+function setStatus(msg, isErr=false){ $('status').textContent=msg; $('status').style.color=isErr?'#fecaca':'#9ab0d6'; }
+async function saveGitHub(){
+  saveCfg();
+  const workerUrl=$('workerUrl').value.trim(); const adminKey=$('adminKey').value.trim();
+  if(!workerUrl){ return setStatus('Informe a URL do Worker.', true); }
+  try{
+    setStatus('Salvando no GitHub...');
+    const payload = { records: state.rows.map(({__idx,...r})=>r), message: 'Atualiza base Torre via painel admin' };
+    const r = await fetch(workerUrl, { method:'POST', headers:{'Content-Type':'application/json','X-Admin-Key':adminKey}, body: JSON.stringify(payload)});
+    const j = await r.json();
+    if(!r.ok || !j.ok) throw new Error(JSON.stringify(j.error||j));
+    setStatus('Salvo com sucesso. Commit: '+(j.commit||'ok'));
+  }catch(e){ setStatus('Erro ao salvar: '+e.message, true); }
+}
+$('btnReload').addEventListener('click', loadRemote);
+$('btnAdd').addEventListener('click', addRow);
+$('btnSave').addEventListener('click', saveGitHub);
+$('btnClear').addEventListener('click', ()=>{$('q').value='';$('fAnalista').value='';$('fMotivo').value='';$('fGn').value='';applyFilters();});
+['q','fAnalista','fMotivo','fGn'].forEach(id=>$(id).addEventListener('input', applyFilters));
+loadCfg();
+loadRemote().then(()=>{ state.rows = state.rows.map((r,i)=>({...r,__idx:i})); applyFilters();});
+</script>
+</body>
+</html>
