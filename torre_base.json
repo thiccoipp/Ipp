@@ -42369,5 +42369,23 @@
     "uid": 1521,
     "createdAt": "2026-03-14T17:07:36.658Z",
     "updatedAt": "2026-03-14T17:07:36.658Z"
+  },
+  {
+    "status": "Em Aberto",
+    "dataInício": "2026-03-14",
+    "fcr": "Não",
+    "analista": "Roberta",
+    "motivo": "Tratativas Financeiras/Repasses",
+    "subClassificacao": "Reclamação",
+    "cnpj": "48329507000110",
+    "razaoSocial": "Auto Posto Trivela 2",
+    "tipoAtendimento": "Receptivo",
+    "origemContato": "Whatsapp",
+    "gn": "Urb Vitoria",
+    "detalhes": "A revenda solicitou reembolso de uma transação pelo KMV, feita no dia 23/12/2025, no valor de R$ 251,15. Passei o caso para Ana Paula. ",
+    "id": 1522,
+    "uid": 1522,
+    "createdAt": "2026-03-14T17:08:13.718Z",
+    "updatedAt": "2026-03-14T17:08:13.718Z"
   }
 ]
