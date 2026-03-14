@@ -3,7 +3,10 @@
 <head>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><circle cx=%2750%27 cy=%2750%27 r=%2750%27 fill=%27%230045B5%27/><text x=%2750%27 y=%2772%27 font-size=%2770%27 font-weight=%27bold%27 fill=%27%23FFD100%27 text-anchor=%27middle%27 font-family=%27Arial%27>C</text></svg>">
     <text y='.9em' font-size='90'>📊</text></svg>">
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> 
+ <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"> 
+ <meta http-equiv="Pragma" content="no-cache"> 
+ <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CONSOLIDA TORRE - Dashboard Unificado</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -5597,8 +5600,7 @@ Chart.register(ChartDataLabels);
 
 // ===== API DATA LOADING FUNCTIONS =====
 function chamarApi(forceRefresh = false) {
-    const baseUrl = &#x27;https://raw.githubusercontent.com/thiccoipp/Ipp/refs/heads/main/torre_base.json&#x27;;
-    const url = forceRefresh ? `${baseUrl}?t=${Date.now()}` : baseUrl;
+    const url = &#x27;https://raw.githubusercontent.com/thiccoipp/Ipp/refs/heads/main/torre_base.json&#x27;;
 
     if (!forceRefresh) {
         const cachedData = APICache.get(&#x27;operational_data_json_raw&#x27;, APICache.TTL_SHORT);
@@ -5621,12 +5623,10 @@ function chamarApi(forceRefresh = false) {
         }
     }
 
-    if (forceRefresh) { try { APICache.clear(&#x27;operational_data_json_raw&#x27;); APICache.clear(&#x27;operational_timestamp_json_raw&#x27;); } catch(e){} }
-
     showLoading(true, &quot;Carregando base oficial...&quot;);
     startLoadingProgress();
 
-    return fetch(url, { method: &#x27;GET&#x27;, cache: &#x27;no-store&#x27; })
+    fetch(url, { method: &#x27;GET&#x27;, cache: &#x27;no-store&#x27; })
     .then(response =&gt; {
         if (!response.ok) throw new Error(&#x27;Erro ao baixar JSON oficial: &#x27; + response.status);
         return response.json();
@@ -5649,25 +5649,25 @@ function chamarApi(forceRefresh = false) {
 
 async function syncAfterWrite() {
     try {
-        if (typeof APICache !== &#x27;undefined&#x27;) {
-            APICache.clear(&#x27;operational_data_json_raw&#x27;);
-            APICache.clear(&#x27;operational_timestamp_json_raw&#x27;);
+        if (typeof APICache !== 'undefined') {
+            APICache.clear('operational_data_json_raw');
+            APICache.clear('operational_timestamp_json_raw');
         }
     } catch (e) {}
 
-    for (let i = 0; i &lt; 6; i++) {
+    for (let i = 0; i < 6; i++) {
         try {
             await chamarApi(true);
-            if (typeof applyAllFilters === &#x27;function&#x27;) applyAllFilters();
-            if (typeof updateKPIs === &#x27;function&#x27;) updateKPIs();
+            if (typeof applyAllFilters === 'function') applyAllFilters();
+            if (typeof updateKPIs === 'function') updateKPIs();
             return true;
         } catch (e) {
-            await new Promise(r =&gt; setTimeout(r, 1200));
+            await new Promise(r => setTimeout(r, 1200));
         }
     }
 
-    if (typeof showToast === &#x27;function&#x27;) {
-        showToast(&#x27;Alteração salva, mas a sincronização visual demorou alguns segundos.&#x27;, &#x27;info&#x27;);
+    if (typeof showToast === 'function') {
+        showToast('Alteração salva, mas a sincronização visual demorou alguns segundos.', 'info');
     }
     return false;
 }
@@ -15137,7 +15137,7 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
     window.showNotification = showNotification;
 
     // DELETE WITH UNDO
-    window.scheduleDelete = function(id, data) { const numericId = parseInt(id, 10); const row = document.querySelector(&#x27;tr[data-id=&quot;&#x27;+id+&#x27;&quot;]&#x27;); if (row) row.classList.add(&#x27;row-pending-delete&#x27;); showUndoToast(id); const tid = setTimeout(async () =&gt; { try { await enterpriseSend(&#x27;DELETE&#x27;, {}, numericId); APICache.clear(&#x27;operational_data&#x27;); RAW = (window.RAW || []).filter(r =&gt; parseInt(r.id || r.ID || r.uid, 10) !== numericId); FILTERED = (window.FILTERED || []).filter(r =&gt; parseInt(r.id || r.ID || r.uid, 10) !== numericId); window.RAW = RAW; window.FILTERED = FILTERED; AppState.pendingDeletes.delete(id); if (row) row.remove(); showNotification(&#x27;Registro removido.&#x27;, &#x27;neutral&#x27;); if (typeof applyAllFilters === &#x27;function&#x27;) applyAllFilters(); if (typeof updateKPIs === &#x27;function&#x27;) updateKPIs(); await syncAfterWrite(); } catch(e) { if (row) row.classList.remove(&#x27;row-pending-delete&#x27;); showNotification(&#x27;Falha ao remover.&#x27;, &#x27;error&#x27;); } }, AppState.UNDO_WINDOW_MS); AppState.pendingDeletes.set(id, { data, timeoutId: tid }); };
+    window.scheduleDelete = function(id, data) { const numericId = parseInt(id, 10); const row = document.querySelector(&#x27;tr[data-id=&quot;&#x27;+id+&#x27;&quot;]&#x27;); if (row) row.classList.add(&#x27;row-pending-delete&#x27;); showUndoToast(id); const tid = setTimeout(async () =&gt; { try { await enterpriseSend(&#x27;DELETE&#x27;, {}, numericId); APICache.clear(&#x27;operational_data&#x27;); RAW = (window.RAW || []).filter(r =&gt; parseInt(r.id || r.ID || r.uid, 10) !== numericId); FILTERED = (window.FILTERED || []).filter(r =&gt; parseInt(r.id || r.ID || r.uid, 10) !== numericId); window.RAW = RAW; window.FILTERED = FILTERED; AppState.pendingDeletes.delete(id); if (row) row.remove(); showNotification(&#x27;Registro removido.&#x27;, &#x27;neutral&#x27;); if (typeof applyAllFilters === &#x27;function&#x27;) applyAllFilters(); if (typeof updateKPIs === &#x27;function&#x27;) updateKPIs(); } catch(e) { if (row) row.classList.remove(&#x27;row-pending-delete&#x27;); showNotification(&#x27;Falha ao remover.&#x27;, &#x27;error&#x27;); } }, AppState.UNDO_WINDOW_MS); AppState.pendingDeletes.set(id, { data, timeoutId: tid }); };
 
     window.undoDelete = function(id) {
         const p = AppState.pendingDeletes.get(id);
@@ -15317,11 +15317,10 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
         try {
             console.debug(&#x27;UPDATE requested id:&#x27;, editId, data);
             await enterpriseSend(&#x27;UPDATE&#x27;, data, editId);
-            await syncAfterWrite();
             AppState.transition(&#x27;SYNCED&#x27;);
             showNotification(&#x27;Registro atualizado.&#x27;, &#x27;neutral&#x27;);
             closeModal(true);
-            await syncAfterWrite();
+            setTimeout(() =&gt; { if (typeof chamarApi === &#x27;function&#x27;) chamarApi(true); if (typeof applyAllFilters === &#x27;function&#x27;) applyAllFilters(); }, 300);
         } catch(e) {
             AppState.transition(&#x27;ERROR&#x27;);
             showNotification(&#x27;Falha ao salvar.&#x27;, &#x27;error&#x27;);
@@ -16473,7 +16472,6 @@ async function submitNovoRegistro(){
         try{ if(window.BornClosed &amp;&amp; typeof window.BornClosed.normalizeInsertPayload===&#x27;function&#x27;){ dados = window.BornClosed.normalizeInsertPayload(dados); } }catch(e){}
         if(typeof enterpriseSend===&#x27;function&#x27;){
             await enterpriseSend(&#x27;INSERT&#x27;,dados);
-            await syncAfterWrite();
         }
         // Invalidar cache após inserção bem-sucedida
         if(typeof APICache!==&#x27;undefined&#x27;)APICache.clear(&#x27;operationaldata&#x27;);
@@ -21633,7 +21631,7 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
     window.showNotification = showNotification;
 
     // DELETE WITH UNDO
-    window.scheduleDelete = function(id, data) { const numericId = parseInt(id, 10); const row = document.querySelector('tr[data-id="'+id+'"]'); if (row) row.classList.add('row-pending-delete'); showUndoToast(id); const tid = setTimeout(async () => { try { await enterpriseSend('DELETE', {}, numericId); APICache.clear('operational_data'); RAW = (window.RAW || []).filter(r => parseInt(r.id || r.ID || r.uid, 10) !== numericId); FILTERED = (window.FILTERED || []).filter(r => parseInt(r.id || r.ID || r.uid, 10) !== numericId); window.RAW = RAW; window.FILTERED = FILTERED; AppState.pendingDeletes.delete(id); if (row) row.remove(); showNotification('Registro removido.', 'neutral'); if (typeof applyAllFilters === 'function') applyAllFilters(); if (typeof updateKPIs === 'function') updateKPIs(); } catch(e) { if (row) row.classList.remove('row-pending-delete'); showNotification('Falha ao remover.', 'error'); } }, AppState.UNDO_WINDOW_MS); AppState.pendingDeletes.set(id, { data, timeoutId: tid }); };
+    window.scheduleDelete = function(id, data) { const numericId = parseInt(id, 10); const row = document.querySelector('tr[data-id="'+id+'"]'); if (row) row.classList.add('row-pending-delete'); showUndoToast(id); const tid = setTimeout(async () => { try { await enterpriseSend('DELETE', {}, numericId); APICache.clear('operational_data'); RAW = (window.RAW || []).filter(r => parseInt(r.id || r.ID || r.uid, 10) !== numericId); FILTERED = (window.FILTERED || []).filter(r => parseInt(r.id || r.ID || r.uid, 10) !== numericId); window.RAW = RAW; window.FILTERED = FILTERED; AppState.pendingDeletes.delete(id); if (row) row.remove(); showNotification('Registro removido.', 'neutral'); if (typeof applyAllFilters === 'function') applyAllFilters(); if (typeof updateKPIs === 'function') updateKPIs(); await syncAfterWrite(); } catch(e) { if (row) row.classList.remove('row-pending-delete'); const msg = String(e && e.message || e || ''); if (msg.includes('404') || msg.toLowerCase().includes('record not found') || msg.toLowerCase().includes('registro não encontrado')) { showNotification('Registro já não existe mais na base atual. Sincronizando tela...', 'warning'); await syncAfterWrite(); } else { showNotification('Falha ao remover.', 'error'); } } }, AppState.UNDO_WINDOW_MS); AppState.pendingDeletes.set(id, { data, timeoutId: tid }); };
 
     window.undoDelete = function(id) {
         const p = AppState.pendingDeletes.get(id);
@@ -21811,10 +21809,11 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
 
         try {
             await enterpriseSend('UPDATE', data, editId);
+            await syncAfterWrite();
             AppState.transition('SYNCED');
             showNotification('Registro atualizado.', 'neutral');
             closeModal(true);
-            setTimeout(() => { if (typeof chamarApi === 'function') chamarApi(true); if (typeof applyAllFilters === 'function') applyAllFilters(); }, 300);
+            await syncAfterWrite();
         } catch(e) {
             AppState.transition('ERROR');
             showNotification('Falha ao salvar.', 'error');
@@ -21822,7 +21821,7 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
         }
     };
 
-    window.deleteRecord = function(id, evt) { if (evt) { evt.preventDefault(); evt.stopPropagation(); } const rid = parseInt(id, 10); if (isNaN(rid)) { showNotification('ID inválido.', 'error'); return; } const rec = (window.RAW || []).find(r => parseInt(r.id || r.ID || r.uid, 10) === rid); if (!rec) { showNotification('Registro não encontrado.', 'error'); return; } scheduleDelete(rid, rec); };
+    window.deleteRecord = function(id, evt) { if (evt) { evt.preventDefault(); evt.stopPropagation(); } const rid = parseInt(id, 10); if (isNaN(rid)) { showNotification('ID inválido.', 'error'); return; } const rec = (window.RAW || []).find(r => parseInt(r.id || r.ID || r.uid, 10) === rid); if (!rec) { showNotification('Registro não encontrado na tela. Sincronizando base...', 'warning'); syncAfterWrite(); return; } scheduleDelete(rid, rec); };
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { const m = document.getElementById('crudModal'); if (m?.classList.contains('visible')) closeModal(); } });
 
@@ -22578,6 +22577,7 @@ async function submitNovoRegistro(){
         // CORREÇÃO: Aguardar a resposta da API antes de continuar
         if(typeof enterpriseSend==='function'){
             await enterpriseSend('INSERT',dados);
+            await syncAfterWrite();
         }
         // Invalidar cache após inserção bem-sucedida
         if(typeof APICache!=='undefined')APICache.clear('operationaldata');
@@ -24346,3 +24346,4 @@ window.addEventListener('load', carregarDadosDoBanco);
 </body>
 
 </html>
+<script>console.log('ULTRA NOCACHE ativo');</script>
