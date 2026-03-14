@@ -68,5 +68,23 @@
     "uid": 1523,
     "createdAt": "2026-03-14T17:34:54.113Z",
     "updatedAt": "2026-03-14T17:34:54.113Z"
+  },
+  {
+    "status": "Em Aberto",
+    "dataInício": "2026-03-14",
+    "fcr": "Não",
+    "analista": "Ricardo",
+    "motivo": "Ipiranga Online",
+    "cnpj": "01634812000151",
+    "razaoSocial": "COMERCIO DERIVADOS DE PETROLEO RECREIO CAMPESTRE LTDA",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "Chat",
+    "solicitante": "CN",
+    "areaResponsavelResolucao": "Torre de Expansão",
+    "detalhes": "ssdadasdsdss",
+    "id": 1524,
+    "uid": 1524,
+    "createdAt": "2026-03-14T18:13:23.228Z",
+    "updatedAt": "2026-03-14T18:13:23.228Z"
   }
 ]
