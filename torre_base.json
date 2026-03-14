@@ -38129,5 +38129,25 @@
     "uid": 4,
     "createdAt": "2026-03-14T14:40:56.321Z",
     "updatedAt": "2026-03-14T14:40:56.321Z"
+  },
+  {
+    "status": "Em Aberto",
+    "dataInício": "2026-03-14",
+    "fcr": "Não",
+    "analista": "André",
+    "motivo": "Alteração de Domicílio Bancário",
+    "subClassificacao": "Solicitação",
+    "cnpj": "03052091000105",
+    "razaoSocial": "CASSIANO COMERCIO DE COMBUSTIVEIS E CONVENIENCIAS LTDA",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "Portal",
+    "gn": "G.N. Rodovia Curitiba",
+    "solicitante": "CT",
+    "areaResponsavelResolucao": "Coord Produtos Digitais B2B",
+    "detalhes": "\\sx\\sssssa",
+    "id": 5,
+    "uid": 5,
+    "createdAt": "2026-03-14T14:54:45.011Z",
+    "updatedAt": "2026-03-14T14:54:45.011Z"
   }
 ]
