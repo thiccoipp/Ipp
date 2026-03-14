@@ -42382,5 +42382,24 @@
     "uid": 1522,
     "createdAt": "2026-03-14T16:09:02.958Z",
     "updatedAt": "2026-03-14T16:09:02.958Z"
+  },
+  {
+    "status": "Em Aberto",
+    "dataInício": "2026-03-14",
+    "fcr": "Não",
+    "analista": "Larissa",
+    "subClassificacao": "Comunicação",
+    "cnpj": "07752056000141",
+    "razaoSocial": "AUTO POSTO BUENO DE ARACOIABA LTDA",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "Telefone",
+    "gn": "G.N. Rodovia Ribeirao Preto",
+    "solicitante": "CN",
+    "areaResponsavelResolucao": "Torre de Expansão",
+    "detalhes": "kkkjj",
+    "id": 1523,
+    "uid": 1523,
+    "createdAt": "2026-03-14T16:43:03.046Z",
+    "updatedAt": "2026-03-14T16:43:03.046Z"
   }
 ]
