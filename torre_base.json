@@ -42333,6 +42333,22 @@
     "Caminho": "personal/roberta_rocha_ipiranga_ipiranga/Lists/Torre de Expanso  Atendimentos",
     "id": 1520,
     "uid": 1520,
-    "_technical_key": "1520|08762127000150|OFS Desconto Convenção 2026|2026-03-10T00:00:00|Super Posto Imperador Ltda"
+    "_technical_key": "1520|08762127000150|OFS Desconto Convenção 2026|2026-03-10T00:00:00|Super Posto Imperador Ltda",
+    "status": "Concluído",
+    "dataInício": "2026-03-10",
+    "dataFim": "2026-03-09",
+    "fcr": "Sim",
+    "analista": "Roberta",
+    "motivo": "OFS Desconto Convenção 2026",
+    "subClassificacao": "Comunicação",
+    "cnpj": "8762127000150",
+    "razaoSocial": "Super Posto Imperador Ltda",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "WhatsApp",
+    "gn": "G.N. Urbano Belem",
+    "solicitante": "Torre",
+    "areaResponsavelResolucao": "Não Informado",
+    "detalhes": "Comunicação para os postos Comunicação enviada aos postos convidados para a convenção, informando sobre a oferta especial com possibilidade de abatimento na taxa de MDR em maio/2026. Para elegibilidade, o posto deve atingir 200 transações durante o período da campanha e incluir ao menos um produto IpiMax.\nCampanha com início em 11 ou 12/03 e término em 12/04 para a conveção sobre a ofera especial com possível abatimento na taxa do MDR em maio de 2026 ( atingindo 200 transações  e a campanha deverá conter pelo menos um produto de ipimax iniciando em 11 ou 12 de março finalizanfo em 12/248 fup teste teste",
+    "updatedAt": "2026-03-14T16:50:30.960Z"
   }
 ]
