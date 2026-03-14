@@ -38111,28 +38111,6 @@
     "updatedAt": "2026-03-14T14:25:56.136Z"
   },
   {
-    "status": "Concluído",
-    "dataInício": "2026-03-14",
-    "dataFim": "2026-03-17",
-    "fcr": "Não",
-    "analista": "André",
-    "motivo": "Ajuste Lat Long",
-    "motivoEncerramento": "Retomou o uso",
-    "subClassificacao": "Dúvida",
-    "cnpj": "61019997000116",
-    "razaoSocial": "POSTO PAULISTA TURMALINA DE MARILIA LTDA",
-    "tipoAtendimento": "Receptivo",
-    "origemContato": "Presencial",
-    "gn": "G.N. Rodovia Ribeirao Preto",
-    "solicitante": "Revendedor",
-    "areaResponsavelResolucao": "Torre de Expansão",
-    "detalhes": "ddddd\n\n14/03/2026 - Retomou o uso\ndd",
-    "id": 2,
-    "uid": 2,
-    "createdAt": "2026-03-14T14:35:06.833Z",
-    "updatedAt": "2026-03-14T14:35:06.833Z"
-  },
-  {
     "status": "Em Aberto",
     "dataInício": "2026-03-14",
     "fcr": "Não",
