@@ -38131,5 +38131,27 @@
     "uid": 2,
     "createdAt": "2026-03-14T14:35:06.833Z",
     "updatedAt": "2026-03-14T14:35:06.833Z"
+  },
+  {
+    "status": "Concluído",
+    "dataInício": "2026-03-14",
+    "dataFim": "2026-03-14",
+    "fcr": "Não",
+    "analista": "Larissa",
+    "motivo": "Ajuste Lat Long",
+    "motivoEncerramento": "Retomou o uso",
+    "subClassificacao": "Adesão",
+    "cnpj": "01634812000151",
+    "razaoSocial": "COMERCIO DERIVADOS DE PETROLEO RECREIO CAMPESTRE LTDA",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "E-mail",
+    "gn": "G.N. Urbano Rio De Janeiro",
+    "solicitante": "Revendedor",
+    "areaResponsavelResolucao": "Torre de Expansão",
+    "detalhes": "zxsxxsx\n\n14/03/2026 - Retomou o uso\nsxxsxxsx",
+    "id": 3,
+    "uid": 3,
+    "createdAt": "2026-03-14T14:36:35.263Z",
+    "updatedAt": "2026-03-14T14:36:35.263Z"
   }
 ]
