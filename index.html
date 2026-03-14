@@ -18506,7 +18506,7 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
 
         // Power Automate API Endpoint
         // ENDPOINT 1 - SOMENTE LEITURA (READ)
-        const RAW_XLSX_URL = &quot;https://raw.githubusercontent.com/thiccoipp/Ipp/refs/heads/main/torre_base.json&quot;;
+        const RAW_XLSX_URL = &quot;payload_unificado_consolida_reqs.json&quot;;
         const API_READ = RAW_XLSX_URL;
 
         // CRUD agora é local no navegador (sem API)
@@ -18855,7 +18855,35 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
             }
         }
 
-        async function loadRemoteData() {
+        
+        function loadReqsInternasLocal() {
+            try {
+                const raw = localStorage.getItem("reqs_internas_local");
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed?.data) ? parsed.data : [];
+            } catch(e) { return []; }
+        }
+        function normalizeReqLocalDates(list) {
+            return (list || []).map(item => ({
+                ...item,
+                start: item.start ? new Date(item.start) : (item.dtStart ? new Date(item.dtStart) : null),
+                end: item.end ? new Date(item.end) : (item.dtEnd ? new Date(item.dtEnd) : null)
+            }));
+        }
+        function mergeReqsInternas(payloadReqs, localReqs) {
+            const base = Array.isArray(payloadReqs) ? payloadReqs.slice() : [];
+            const local = normalizeReqLocalDates(localReqs);
+            const map = new Map();
+            base.forEach(r => map.set(String(r.id), r));
+            local.forEach(r => map.set(String(r.id), r));
+            return Array.from(map.values()).sort((a,b) => {
+                const da = a.start ? new Date(a.start).getTime() : 0;
+                const db = b.start ? new Date(b.start).getTime() : 0;
+                return db - da;
+            });
+        }
+async function loadRemoteData() {
             const savedData = loadDataFromLocalStorage();
             const agora = Date.now();
             if (savedData &amp;&amp; savedData.data &amp;&amp; savedData.data.length &gt; 0) {
@@ -18865,12 +18893,13 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
             }
             carregarDaAPI(true);
         }
-        async function atualizarEmBackground() {
+        async function atualizarEmBackground(localReqs = []) {
             try {
                 const response = await fetch(RAW_XLSX_URL, { method: &quot;GET&quot;, cache: &quot;no-store&quot; });
                 if (!response.ok) return;
-                const jsonData = await response.json();
-                const novosData = processLocalFileData(jsonData);
+                const payload = await response.json();
+                const jsonData = Array.isArray(payload) ? payload : (Array.isArray(payload.reqsInternas) ? payload.reqsInternas : []);
+                const novosData = mergeReqsInternas(processLocalFileData(jsonData), localReqs);
                 if (!novosData.length) return;
                 if (novosData.length !== RAWDATA.length) {
                     RAWDATA = novosData;
@@ -18882,13 +18911,14 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
                 }
             } catch (e) { console.warn(&#x27;Atualização em background falhou:&#x27;, e); }
         }
-        async function carregarDaAPI(mostrarLoading) {
+        async function carregarDaAPI(mostrarLoading, localReqs = []) {
             if (mostrarLoading) showLoading(true, &quot;Baixando GitHub JSON...&quot;);
             try {
                 const response = await fetch(RAW_XLSX_URL, { method: &quot;GET&quot;, cache: &quot;no-store&quot; });
                 if (!response.ok) throw new Error(&quot;Erro: &quot; + response.status);
-                const jsonData = await response.json();
-                RAWDATA = processLocalFileData(jsonData);
+                const payload = await response.json();
+                const jsonData = Array.isArray(payload) ? payload : (Array.isArray(payload.reqsInternas) ? payload.reqsInternas : []);
+                RAWDATA = mergeReqsInternas(processLocalFileData(jsonData), localReqs);
                 if (!RAWDATA.length) throw new Error(&quot;Dados inválidos&quot;);
                 currentDataSource = &quot;github_json&quot;;
                 updateDataInfoDisplay();
@@ -20289,6 +20319,9 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
 })();
 </script>
 
+<script id="payload-unificado-note">(function(){window.addEventListener('DOMContentLoaded',function(){try{var st=document.getElementById('dataSourceStatus');if(st&&!document.getElementById('payloadUnifiedBadge')){var badge=document.createElement('div');badge.id='payloadUnifiedBadge';badge.style.fontSize='11px';badge.style.color='var(--text-muted)';badge.style.marginTop='8px';badge.innerHTML='<i class="fa-solid fa-database"></i> Leitura unificada habilitada: <strong>consolida</strong> e <strong>reqsInternas</strong> no mesmo payload JSON.';st.parentNode&&st.parentNode.appendChild(badge);}}catch(e){}});})();</script>
+<script id="reqs-local-merge-note">(function(){window.addEventListener('DOMContentLoaded',function(){try{const st=document.getElementById('dataSourceStatus');if(st&&!document.getElementById('reqsLocalMergeBadge')){const d=document.createElement('div');d.id='reqsLocalMergeBadge';d.style.fontSize='11px';d.style.color='var(--text-muted)';d.style.marginTop='8px';d.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Reqs internas novas/alteradas feitas pelo modal ficam em <strong>merge local</strong> no navegador e se somam ao payload oficial.';st.parentNode&&st.parentNode.appendChild(d);}}catch(e){}});})();</script>
+<script id="reqs-internas-turbo">(function(){function safe(fn){try{fn();}catch(e){}}function renderReqsTurboHeader(){safe(function(){const host=document.querySelector('.context-bar')||document.querySelector('.main-content')||document.body;if(!host||document.getElementById('reqsTurboBox')) return;const box=document.createElement('div');box.id='reqsTurboBox';box.style.marginTop='12px';box.style.padding='14px 16px';box.style.border='1px solid rgba(0,69,181,.12)';box.style.borderRadius='14px';box.style.background='rgba(255,255,255,.55)';box.innerHTML='<div style="font-weight:800;color:#0045B5;margin-bottom:8px"><i class="fa-solid fa-layer-group"></i> Requisições Internas • Modo Turbo</div><div id="reqsTurboStats" style="font-size:12px;color:#475569"></div><div id="reqsTurboCats" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"></div>';host.appendChild(box);});}function updateReqsTurboFromData(){safe(function(){if(!window.RAWDATA||!Array.isArray(window.RAWDATA)) return;renderReqsTurboHeader();const total=RAWDATA.length;const open=RAWDATA.filter(x=>String(x.status||'').toLowerCase().includes('aberto')).length;const closed=total-open;const local=RAWDATA.filter(x=>x&&(x.isLocalReq===true||String(x.id||'').startsWith('LOC-RI-'))).length;const avgMin=Math.round((RAWDATA.filter(x=>Number.isFinite(x.duration)&&x.duration>0).reduce((a,b)=>a+(b.duration||0),0)/Math.max(1,RAWDATA.filter(x=>Number.isFinite(x.duration)&&x.duration>0).length))||0);const stats=document.getElementById('reqsTurboStats');if(stats) stats.innerHTML=`<strong>Total:</strong> ${total} &nbsp;•&nbsp; <strong>Abertas:</strong> ${open} &nbsp;•&nbsp; <strong>Concluídas:</strong> ${closed} &nbsp;•&nbsp; <strong>Locais:</strong> ${local} &nbsp;•&nbsp; <strong>TMR:</strong> ${avgMin} min`;const counts={};RAWDATA.forEach(r=>{const c=(r.categoria||r.motivo||'Geral');counts[c]=(counts[c]||0)+1;});const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);const cats=document.getElementById('reqsTurboCats');if(cats) cats.innerHTML=top.map(([k,v])=>`<span style="padding:6px 10px;border-radius:999px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1D4ED8;font-size:12px;font-weight:700">${k} <span style="opacity:.75">(${v})</span></span>`).join('');});}const wrap=(name)=>{const orig=window[name];if(typeof orig!=='function') return;window[name]=function(){const res=orig.apply(this,arguments);setTimeout(updateReqsTurboFromData,50);return res;}};window.addEventListener('DOMContentLoaded',function(){['initDashboard','renderKPIs','renderCharts','renderTable','saveAtendimento','deleteAtendimento'].forEach(wrap);setTimeout(updateReqsTurboFromData,600);});})();</script>
 </body>
 </html>"></iframe>
 
@@ -24308,7 +24341,7 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
    FONTE OFICIAL DE DADOS — GITHUB JSON
    ========================================================= */
 
-const JSON_URL = 'https://raw.githubusercontent.com/thiccoipp/Ipp/refs/heads/main/torre_base.json';
+const JSON_URL = 'payload_unificado_consolida_reqs.json';
 
 // GARANTE QUE O DASH SEMPRE TENHA ESSAS VARIÁVEIS
 window.RAW = [];
@@ -24323,13 +24356,14 @@ async function carregarDadosDoBanco() {
     const resp = await fetch(JSON_URL, { cache: 'no-store' });
     if (!resp.ok) throw new Error('Falha ao buscar JSON');
 
-    const dados = await resp.json();
+    const payload = await resp.json();
+    const dados = Array.isArray(payload) ? payload : (Array.isArray(payload.consolida) ? payload.consolida : []);
 
     if (!Array.isArray(dados)) {
-      throw new Error('JSON inválido (esperado array)');
+      throw new Error('JSON inválido (esperado array ou payload unificado)');
     }
 
-    // ✅ ESTE É O BANCO DO DASH
+    // ✅ ESTE É O BANCO DO DASH (raiz consolida do payload unificado)
     window.RAW = dados.map((r, i) => ({
       uid: r.uid ?? r.id ?? i + 1,
       ...r
