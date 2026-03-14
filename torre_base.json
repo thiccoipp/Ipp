@@ -42390,5 +42390,25 @@
     "id": 1521,
     "uid": 1521,
     "_technical_key": "1521|51096085000194|OFS Desconto Convenção 2026|2026-03-10T00:00:00|Posto Abi-Kair Central Ltda"
+  },
+  {
+    "status": "Em Aberto",
+    "dataInício": "2026-03-14",
+    "fcr": "Não",
+    "analista": "Ricardo",
+    "motivo": "Ajuste Lat Long",
+    "subClassificacao": "Comunicação",
+    "cnpj": "00146450000197",
+    "razaoSocial": "COMERCIO DERIVADOS DE PETROLEO RECREIO CAMPESTRE LTDA",
+    "tipoAtendimento": "Receptivo",
+    "origemContato": "Presencial",
+    "gn": "G.N. Rodovia Ribeirao Preto",
+    "solicitante": "Revendedor",
+    "areaResponsavelResolucao": "Coord Produtos Digitais B2B",
+    "detalhes": "sadsaddsasdasdads",
+    "id": 1522,
+    "uid": 1522,
+    "createdAt": "2026-03-14T16:09:02.958Z",
+    "updatedAt": "2026-03-14T16:09:02.958Z"
   }
 ]
