@@ -428,18 +428,6 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;}
 
 </style>
-
-<style id="perf-v3-styles">
-:root{--perf-v3-shadow:0 8px 22px rgba(0,0,0,.14);}
-.chart-container,.bar-chart-mini-container,.chart-scroll-container,.word-cloud-container,.card,.kpi-card,.context-bar,.sidebar,.notification-popup,.automation-popup,.development-popup{backdrop-filter:none !important;}
-.card,.kpi-card,.context-bar,.notification-popup,.automation-popup,.development-popup{box-shadow:var(--perf-v3-shadow) !important;}
-body.perf-busy *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
-body.perf-busy .kpi-card::after,body.perf-busy .card::before,body.perf-busy .header::before{opacity:.14 !important;}
-body.perf-busy .chart-container,body.perf-busy .bar-chart-mini-container,body.perf-busy .chart-scroll-container{filter:none !important;}
-#perfV3Badge{position:fixed;left:14px;bottom:14px;z-index:99999;background:rgba(15,23,42,.88);color:#E2E8F0;border:1px solid rgba(255,255,255,.10);padding:8px 12px;border-radius:999px;font:800 11px/1 Inter,Segoe UI,Arial,sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:0 10px 22px rgba(0,0,0,.24)}
-#perfV3Badge i{color:#FFD100}
-</style>
-
 </head>
 <body>
     <!-- LOADING SCREEN -->
@@ -6061,7 +6049,7 @@ function calcularSaudeOperacional() {
     saudeLbl.innerHTML = `&lt;span style=&quot;font-size: 16px;&quot;&gt;${emoji}&lt;/span&gt; &lt;span style=&quot;font-weight: 700; font-size: 11px; letter-spacing: 0.5px;&quot;&gt;&lt;/span&gt;`;
 }
 
-let RAW = [], FILTERED = [], CURRENT_PAGE = 1, ITEMS_PER_PAGE = 120;
+let RAW = [], FILTERED = [], CURRENT_PAGE = 1, ITEMS_PER_PAGE = 99999;
 window.RAW = RAW; window.FILTERED = FILTERED; window.selectedIds = [];
 
         // ============= VALIDATION &amp; SANITIZATION MODULE =============
@@ -8595,12 +8583,21 @@ function applyAllFilters() {
         const motivoEncMatch = !fMotivoEnc || (getMotivoEncerramentoLabel(item) === fMotivoEnc);
         
         let dateMatch = true;
+        const isOpenBacklog = item.statusNorm === 'Aberto' || item.Status === 'Em Aberto' || item.status === 'Em Aberto';
         if (dStart || dEnd) {
             const itemDate = item.dtStart;
             if (!itemDate) dateMatch = false;
             else {
-                if (dStart &amp;&amp; itemDate &lt; dStart) dateMatch = false;
-                if (dateMatch &amp;&amp; dEnd &amp;&amp; itemDate &gt; dEnd) dateMatch = false;
+                if (isOpenBacklog) {
+                    const periodEnd = dEnd || new Date(8640000000000000);
+                    // Casos em aberto entram como estoque acumulado até o fim do período selecionado.
+                    // Ex.: ao filtrar mês passado, aparecem os abertos iniciados no mês passado e também nos meses anteriores,
+                    // desde que já existissem até o fim daquele recorte.
+                    if (itemDate &gt; periodEnd) dateMatch = false;
+                } else {
+                    if (dStart &amp;&amp; itemDate &lt; dStart) dateMatch = false;
+                    if (dateMatch &amp;&amp; dEnd &amp;&amp; itemDate &gt; dEnd) dateMatch = false;
+                }
             }
         }
         
@@ -12367,7 +12364,7 @@ function updateDemandaInternaFromStorage() {
 updateDemandaInternaFromStorage();
 
 // Verifica a cada 3 segundos se houve mudança (caso você atualize o outro dash na outra aba)
-setInterval(updateDemandaInternaFromStorage, 300000);
+setInterval(updateDemandaInternaFromStorage, 3000);
 
 const STOPWORDS_PT = new Set([&#x27;posto&#x27;,&#x27;entrei&#x27;,&#x27;foram&#x27;,&#x27;a&#x27;,&#x27;o&#x27;,&#x27;e&#x27;,&#x27;é&#x27;,&#x27;de&#x27;,&#x27;da&#x27;,&#x27;do&#x27;,&#x27;das&#x27;,&#x27;dos&#x27;,&#x27;em&#x27;,&#x27;no&#x27;,&#x27;na&#x27;,&#x27;nos&#x27;,&#x27;nas&#x27;,&#x27;um&#x27;,&#x27;uma&#x27;,&#x27;uns&#x27;,&#x27;umas&#x27;,&#x27;para&#x27;,&#x27;por&#x27;,&#x27;com&#x27;,&#x27;sem&#x27;,&#x27;que&#x27;,&#x27;se&#x27;,&#x27;não&#x27;,&#x27;nao&#x27;,&#x27;mais&#x27;,&#x27;como&#x27;,&#x27;mas&#x27;,&#x27;foi&#x27;,&#x27;ser&#x27;,&#x27;são&#x27;,&#x27;sao&#x27;,&#x27;está&#x27;,&#x27;esta&#x27;,&#x27;estar&#x27;,&#x27;esse&#x27;,&#x27;essa&#x27;,&#x27;esses&#x27;,&#x27;essas&#x27;,&#x27;este&#x27;,&#x27;estes&#x27;,&#x27;estas&#x27;,&#x27;isto&#x27;,&#x27;isso&#x27;,&#x27;aquilo&#x27;,&#x27;aquele&#x27;,&#x27;aquela&#x27;,&#x27;aqueles&#x27;,&#x27;aquelas&#x27;,&#x27;pelo&#x27;,&#x27;pela&#x27;,&#x27;pelos&#x27;,&#x27;pelas&#x27;,&#x27;ao&#x27;,&#x27;aos&#x27;,&#x27;à&#x27;,&#x27;às&#x27;,&#x27;até&#x27;,&#x27;após&#x27;,&#x27;ante&#x27;,&#x27;sob&#x27;,&#x27;sobre&#x27;,&#x27;entre&#x27;,&#x27;perante&#x27;,&#x27;contra&#x27;,&#x27;desde&#x27;,&#x27;durante&#x27;,&#x27;mediante&#x27;,&#x27;segundo&#x27;,&#x27;conforme&#x27;,&#x27;consoante&#x27;,&#x27;quando&#x27;,&#x27;onde&#x27;,&#x27;porque&#x27;,&#x27;porquê&#x27;,&#x27;pois&#x27;,&#x27;logo&#x27;,&#x27;portanto&#x27;,&#x27;entretanto&#x27;,&#x27;todavia&#x27;,&#x27;contudo&#x27;,&#x27;porém&#x27;,&#x27;já&#x27;,&#x27;ainda&#x27;,&#x27;também&#x27;,&#x27;tambem&#x27;,&#x27;apenas&#x27;,&#x27;só&#x27;,&#x27;somente&#x27;,&#x27;mesmo&#x27;,&#x27;mesma&#x27;,&#x27;próprio&#x27;,&#x27;propria&#x27;,&#x27;tal&#x27;,&#x27;tais&#x27;,&#x27;qual&#x27;,&#x27;quais&#x27;,&#x27;quanto&#x27;,&#x27;quanta&#x27;,&#x27;quantos&#x27;,&#x27;quantas&#x27;,&#x27;todo&#x27;,&#x27;toda&#x27;,&#x27;todos&#x27;,&#x27;todas&#x27;,&#x27;outro&#x27;,&#x27;outra&#x27;,&#x27;outros&#x27;,&#x27;outras&#x27;,&#x27;muito&#x27;,&#x27;muita&#x27;,&#x27;muitos&#x27;,&#x27;muitas&#x27;,&#x27;pouco&#x27;,&#x27;pouca&#x27;,&#x27;poucos&#x27;,&#x27;poucas&#x27;,&#x27;algum&#x27;,&#x27;alguma&#x27;,&#x27;alguns&#x27;,&#x27;algumas&#x27;,&#x27;nenhum&#x27;,&#x27;nenhuma&#x27;,&#x27;cada&#x27;,&#x27;certo&#x27;,&#x27;certa&#x27;,&#x27;certos&#x27;,&#x27;certas&#x27;,&#x27;vário&#x27;,&#x27;vária&#x27;,&#x27;vários&#x27;,&#x27;várias&#x27;,&#x27;tanto&#x27;,&#x27;tanta&#x27;,&#x27;tantos&#x27;,&#x27;tantas&#x27;,&#x27;bastante&#x27;,&#x27;bastantes&#x27;,&#x27;qualquer&#x27;,&#x27;quaisquer&#x27;,&#x27;eu&#x27;,&#x27;tu&#x27;,&#x27;ele&#x27;,&#x27;ela&#x27;,&#x27;nós&#x27;,&#x27;vós&#x27;,&#x27;eles&#x27;,&#x27;elas&#x27;,&#x27;me&#x27;,&#x27;te&#x27;,&#x27;lhe&#x27;,&#x27;vos&#x27;,&#x27;lhes&#x27;,&#x27;mim&#x27;,&#x27;ti&#x27;,&#x27;si&#x27;,&#x27;meu&#x27;,&#x27;minha&#x27;,&#x27;meus&#x27;,&#x27;minhas&#x27;,&#x27;teu&#x27;,&#x27;tua&#x27;,&#x27;teus&#x27;,&#x27;tuas&#x27;,&#x27;seu&#x27;,&#x27;sua&#x27;,&#x27;seus&#x27;,&#x27;suas&#x27;,&#x27;nosso&#x27;,&#x27;nossa&#x27;,&#x27;nossos&#x27;,&#x27;nossas&#x27;,&#x27;vosso&#x27;,&#x27;vossa&#x27;,&#x27;vossos&#x27;,&#x27;vossas&#x27;,&#x27;dele&#x27;,&#x27;dela&#x27;,&#x27;deles&#x27;,&#x27;delas&#x27;,&#x27;nele&#x27;,&#x27;nela&#x27;,&#x27;neles&#x27;,&#x27;nelas&#x27;,&#x27;aqui&#x27;,&#x27;aí&#x27;,&#x27;ali&#x27;,&#x27;lá&#x27;,&#x27;cá&#x27;,&#x27;acolá&#x27;,&#x27;longe&#x27;,&#x27;perto&#x27;,&#x27;dentro&#x27;,&#x27;fora&#x27;,&#x27;acima&#x27;,&#x27;abaixo&#x27;,&#x27;adiante&#x27;,&#x27;atrás&#x27;,&#x27;agora&#x27;,&#x27;antes&#x27;,&#x27;depois&#x27;,&#x27;hoje&#x27;,&#x27;ontem&#x27;,&#x27;amanhã&#x27;,&#x27;sempre&#x27;,&#x27;nunca&#x27;,&#x27;jamais&#x27;,&#x27;talvez&#x27;,&#x27;sim&#x27;,&#x27;bem&#x27;,&#x27;mal&#x27;,&#x27;assim&#x27;,&#x27;então&#x27;,&#x27;entao&#x27;,&#x27;ora&#x27;,&#x27;seja&#x27;,&#x27;ou&#x27;,&#x27;nem&#x27;,&#x27;quer&#x27;,&#x27;enquanto&#x27;,&#x27;embora&#x27;,&#x27;caso&#x27;,&#x27;ref&#x27;,&#x27;obs&#x27;,&#x27;via&#x27;,&#x27;dia&#x27;,&#x27;dias&#x27;,&#x27;vez&#x27;,&#x27;vezes&#x27;,&#x27;forma&#x27;,&#x27;formas&#x27;,&#x27;tipo&#x27;,&#x27;tipos&#x27;,&#x27;ano&#x27;,&#x27;anos&#x27;,&#x27;mes&#x27;,&#x27;mês&#x27;,&#x27;meses&#x27;,&#x27;favor&#x27;,&#x27;obrigado&#x27;,&#x27;obrigada&#x27;,&#x27;prezado&#x27;,&#x27;prezada&#x27;,&#x27;att&#x27;,&#x27;atenciosamente&#x27;,&#x27;cordialmente&#x27;,&#x27;olá&#x27;,&#x27;ola&#x27;,&#x27;bom&#x27;,&#x27;boa&#x27;,&#x27;etc&#x27;,&#x27;sr&#x27;,&#x27;sra&#x27;,&#x27;dr&#x27;,&#x27;dra&#x27;,&#x27;ltda&#x27;,&#x27;cpf&#x27;,&#x27;cnpj&#x27;,&#x27;rg&#x27;,&#x27;ie&#x27;]);
 let wordCloudData = [];
@@ -20273,105 +20270,21 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
 </script>
 
 
-<script id="perf-v3-script">
+<script id="open-stock-note-script">
 (function(){
-  function idle(fn, t){ if ('requestIdleCallback' in window) return requestIdleCallback(fn, {timeout:t||1400}); return setTimeout(fn, 260); }
-  function setBusy(on){ document.body.classList.toggle('perf-busy', !!on); }
-  function addBadge(){ if (document.getElementById('perfV3Badge')) return; const b=document.createElement('div'); b.id='perfV3Badge'; b.innerHTML='<i class="fa-solid fa-layer-group"></i><span>Performance V3</span>'; document.body.appendChild(b); }
-  function patchChartDefaults(){
-    try{
-      if (window.Chart && Chart.defaults){
-        Chart.defaults.responsive = true;
-        Chart.defaults.maintainAspectRatio = false;
-        Chart.defaults.animation = false;
-        Chart.defaults.devicePixelRatio = 1;
-        Chart.defaults.plugins = Chart.defaults.plugins || {};
-        Chart.defaults.plugins.tooltip = Chart.defaults.plugins.tooltip || {};
-        Chart.defaults.plugins.legend = Chart.defaults.plugins.legend || {};
-      }
-    }catch(e){}
-  }
-  function patchApplyFilters(){
-    if (typeof applyAllFilters !== 'function') return;
-    const __orig = applyAllFilters; let raf = 0; let pending = false;
-    window.applyAllFilters = function(){
-      if (pending) { cancelAnimationFrame(raf); }
-      pending = true;
-      setBusy(true);
-      raf = requestAnimationFrame(function(){
-        try{ __orig(); } finally { pending = false; setTimeout(function(){ setBusy(false); }, 160); }
-      });
-    };
-  }
-  function patchRenderCharts(){
-    if (typeof renderCharts !== 'function') return;
-    const __orig = renderCharts;
-    let last = 0;
-    window.renderCharts = function(){
-      const now = Date.now();
-      // evita re-render muito colado
-      if (now - last < 180) return;
-      last = now;
-      setBusy(true);
-      idle(function(){
-        try{ __orig(); } finally { setTimeout(function(){ setBusy(false); }, 220); }
-      }, 1800);
-    };
-  }
-  function patchPopulateFilters(){
-    if (typeof populateFilters !== 'function') return;
-    const __orig = populateFilters;
-    window.populateFilters = function(){ return idle(function(){ __orig(); }, 900); };
-  }
-  function patchWordCloud(){
-    // desativa atualização automática da nuvem em cascata; mantém sob demanda/scroll
-    if (typeof updateWordCloud === 'function') {
-      window.updateWordCloud = function(){ try{ return lazyInitWordCloud && lazyInitWordCloud(false); }catch(e){} };
-    }
-    if (typeof lazyInitWordCloud === 'function') {
-      const __lazy = lazyInitWordCloud;
-      window.lazyInitWordCloud = function(force){
-        if (force === true) { return idle(function(){ __lazy(true); }, 2600); }
-        return __lazy(force);
-      };
-    }
-  }
-  function patchRenderTable(){
-    if (typeof renderTable !== 'function') return;
-    const __orig = renderTable;
-    window.renderTable = function(){
-      setBusy(true);
-      return idle(function(){ try{ __orig(); } finally { setTimeout(function(){ setBusy(false); }, 100); } }, 700);
-    };
-  }
-  function patchReqFrame(){
-    try{
-      const fr = document.getElementById('frameReqs');
-      if (!fr) return;
-      // mantém a estrutura premium, mas não carrega o segundo frame na abertura
-      if (!fr.dataset.perfDeferred){
-        fr.dataset.perfDeferred = '1';
-        fr.dataset.perfSrcdoc = fr.getAttribute('srcdoc') || '';
-        fr.setAttribute('srcdoc', '<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;font-family:Inter,Arial,sans-serif;background:#0F172A;color:#E2E8F0;display:flex;align-items:center;justify-content:center} .box{padding:22px 24px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.04);box-shadow:0 10px 30px rgba(0,0,0,.25);text-align:center;max-width:380px} .btn{margin-top:14px;background:#FFD100;color:#111827;border:none;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}</style></head><body><div class="box"><div style="font-size:16px;font-weight:800;margin-bottom:6px">Requisições Internas em espera</div><div style="font-size:12px;color:#94A3B8">A view secundária foi adiada para priorizar desempenho do dashboard principal.</div><button class="btn" onclick="parent.postMessage({action: "loadReqsNow"}, "*")">Carregar agora</button></div></body></html>');
-      }
-      window.addEventListener('message', function(ev){
-        try{ if (ev && ev.data && ev.data.action === 'loadReqsNow'){ const f = document.getElementById('frameReqs'); if (f && f.dataset && f.dataset.perfSrcdoc && f.getAttribute('srcdoc') !== f.dataset.perfSrcdoc){ f.setAttribute('srcdoc', f.dataset.perfSrcdoc); } } }catch(e){}
-      }, { once:false });
-    }catch(e){}
-  }
-  function patchHint(){
-    try{ const pi = document.getElementById('paginationInfo'); if (pi && !document.getElementById('perfV3HintRows')){ const s=document.createElement('div'); s.id='perfV3HintRows'; s.style.fontSize='10px'; s.style.color='var(--text-muted)'; s.style.marginTop='6px'; s.textContent='Modo estrutural: 120 linhas por página e frame secundário adiado para máxima fluidez.'; pi.parentElement && pi.parentElement.appendChild(s);} }catch(e){}
-  }
   window.addEventListener('DOMContentLoaded', function(){
-    addBadge();
-    patchChartDefaults();
-    patchApplyFilters();
-    patchRenderCharts();
-    patchPopulateFilters();
-    patchWordCloud();
-    patchRenderTable();
-    patchReqFrame();
-    patchHint();
+    try{
+      var context = document.getElementById('contextSummary');
+      if(context && !document.getElementById('openStockNote')){
+        var note = document.createElement('div');
+        note.id = 'openStockNote';
+        note.style.fontSize = '11px';
+        note.style.color = 'var(--text-muted)';
+        note.style.marginTop = '8px';
+        note.innerHTML = '<i class="fa-solid fa-circle-info"></i> Casos <strong>Em Aberto</strong> usam lógica de <strong>estoque acumulado</strong>: no mês selecionado, aparecem os abertos daquele mês e também os que já vinham de meses anteriores. Casos concluídos seguem o recorte normal do período.';
+        context.parentNode && context.parentNode.appendChild(note);
+      }
+    }catch(e){}
   });
 })();
 </script>
