@@ -25,7 +25,22 @@
     "Caminho": "personal/roberta_rocha_ipiranga_ipiranga/Lists/Torre de Expanso  Atendimentos",
     "id": 1522,
     "uid": 1522,
-    "_technical_key": "1522|90589698000468|OFS Desconto Convenção 2026|2026-03-10T00:00:00|Gbi Combustiveis Ltda"
+    "_technical_key": "1522|90589698000468|OFS Desconto Convenção 2026|2026-03-10T00:00:00|Gbi Combustiveis Ltda",
+    "status": "Em Aberto",
+    "dataInício": "2026-03-10",
+    "fcr": "Sim",
+    "analista": "Ricardo",
+    "motivo": "OFS Desconto Convenção 2026",
+    "subClassificacao": "Comunicação",
+    "cnpj": "90589698000468",
+    "razaoSocial": "Gbi Combustiveis Ltda",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "WhatsApp",
+    "gn": "G.N. Urbano Santa Maria",
+    "solicitante": "Torre",
+    "areaResponsavelResolucao": "Não Informado",
+    "detalhes": "Comunicação para os postos Comunicação enviada aos postos convidados para a convenção, informando sobre a oferta especial com possibilidade de abatimento na taxa de MDR em maio/2026. Para elegibilidade, o posto deve atingir 200 transações durante o período da campanha e incluir ao menos um produto IpiMax.\nCampanha com início em 11 ou 12/03 e término em 12/04 para a conveção sobre a ofera especial com possível abatimento na taxa do MDR em maio de 2026 ( atingindo 200 transações  e a campanha deverá conter pelo menos um produto de ipimax iniciando em 11 ou 12 de março finalizanfo em 12/250",
+    "updatedAt": "2026-03-14T17:38:32.091Z"
   },
   {
     "status": "Em Aberto",
