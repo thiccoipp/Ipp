@@ -39988,5 +39988,24 @@
     "sourceModule": "frontend_excel",
     "TipoRegistro": "ATENDIMENTO",
     "statusNorm": "Aberto"
+  },
+  {
+    "status": "Em Aberto",
+    "dataInício": "2026-03-15",
+    "fcr": "Não",
+    "analista": "André",
+    "subClassificacao": "Comunicação",
+    "cnpj": "00146450000197",
+    "razaoSocial": "dogmas",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "E-mail",
+    "gn": "G.N. Urbano Ribeirao Preto",
+    "solicitante": "Revendedor",
+    "areaResponsavelResolucao": "Coord Produtos Digitais B2B",
+    "detalhes": "s",
+    "id": 4894916,
+    "uid": 4894916,
+    "createdAt": "2026-03-15T05:10:14.251Z",
+    "updatedAt": "2026-03-15T05:10:14.251Z"
   }
 ]
