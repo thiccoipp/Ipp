@@ -226,31 +226,6 @@
 /* =============================================================== */
 
 </style>
-  <!-- Estilos do filtro de meses personalizado -->
-  <style id="month-filter-styles">
-    .month-filter {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 10px 0;
-    }
-    .month-filter .month {
-      padding: 4px 8px;
-      background: #1E293B;
-      color: #F9FAFB;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      user-select: none;
-    }
-    .month-filter .month.total {
-      font-weight: bold;
-    }
-    .month-filter .month.selected {
-      background: #FFD100;
-      color: #0F172A;
-    }
-  </style>
 
 <style id=\"egToolbarStyles\">
   .eg-toolbar{ display:flex; align-items:center; gap:8px; background: rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:10px; padding:6px; }
@@ -589,119 +564,6 @@ if (typeof saveNewUpdateFromPopup === 'function') { window.saveUpdateFromModal =
 // Alias para compatibilidade
 // Removed legacy alias to avoid overwriting correct functions
 // window.saveNewUpdateFromPopup = window.saveUpdateFromModal;
-</script>
-<!-- Script para filtro de meses e card de abertos total -->
-<script id="month-filter-script">
-(function(){
-  let selectedMonthMax = null;
-  function handleMonthClick(event) {
-    const month = parseInt(event.currentTarget.dataset.month);
-    if (isNaN(month)) return;
-    const container = document.getElementById('monthFilterContainer');
-    if (!container) return;
-    if (month === 0) {
-      selectedMonthMax = null;
-      container.querySelectorAll('.month').forEach(el => el.classList.remove('selected'));
-      const dateStartEl = document.getElementById('dateStart');
-      const dateEndEl = document.getElementById('dateEnd');
-      if (dateStartEl) dateStartEl.value = '';
-      if (dateEndEl) dateEndEl.value = '';
-      if (typeof applyFilters === 'function') applyFilters();
-      return;
-    }
-    if (selectedMonthMax === month) {
-      selectedMonthMax = null;
-      container.querySelectorAll('.month').forEach(el => el.classList.remove('selected'));
-      const dateStartEl = document.getElementById('dateStart');
-      const dateEndEl = document.getElementById('dateEnd');
-      if (dateStartEl) dateStartEl.value = '';
-      if (dateEndEl) dateEndEl.value = '';
-      if (typeof applyFilters === 'function') applyFilters();
-      return;
-    }
-    selectedMonthMax = month;
-    container.querySelectorAll('.month').forEach(el => {
-      const m = parseInt(el.dataset.month);
-      if (!isNaN(m) && m > 0 && m <= month) el.classList.add('selected');
-      else el.classList.remove('selected');
-    });
-    let year = new Date().getFullYear();
-    try {
-      if (window.RAWDATA && Array.isArray(window.RAWDATA) && window.RAWDATA.length) {
-        const years = window.RAWDATA.map(item => {
-          const s = item.start;
-          if (!s) return null;
-          const d = new Date(s);
-          return d.getFullYear();
-        }).filter(x => x);
-        if (years.length) {
-          years.sort((a,b) => a - b);
-          year = years[0];
-        }
-      }
-    } catch (e) {}
-    const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, month, 0);
-    const isoStart = startDate.toISOString().split('T')[0];
-    const isoEnd = endDate.toISOString().split('T')[0];
-    const dateStartEl = document.getElementById('dateStart');
-    const dateEndEl = document.getElementById('dateEnd');
-    if (dateStartEl) dateStartEl.value = isoStart;
-    if (dateEndEl) dateEndEl.value = isoEnd;
-    if (typeof applyFilters === 'function') applyFilters();
-  }
-  window.handleMonthClick = handleMonthClick;
-  function createMonthFilter() {
-    if (document.getElementById('monthFilterContainer')) return;
-    const sticky = document.querySelector('.kpi-sticky-container');
-    if (!sticky) return;
-    const container = document.createElement('div');
-    container.id = 'monthFilterContainer';
-    container.className = 'month-filter';
-    const months = [
-      { num: 1, label: 'Jan' },
-      { num: 2, label: 'Fev' },
-      { num: 3, label: 'Mar' },
-      { num: 4, label: 'Abr' },
-      { num: 5, label: 'Mai' },
-      { num: 6, label: 'Jun' },
-      { num: 7, label: 'Jul' },
-      { num: 8, label: 'Ago' },
-      { num: 9, label: 'Set' },
-      { num: 10, label: 'Out' },
-      { num: 11, label: 'Nov' },
-      { num: 12, label: 'Dez' }
-    ];
-    months.forEach(m => {
-      const div = document.createElement('div');
-      div.className = 'month';
-      div.dataset.month = m.num;
-      div.innerText = m.label;
-      div.addEventListener('click', handleMonthClick);
-      container.appendChild(div);
-    });
-    const divTotal = document.createElement('div');
-    divTotal.className = 'month total';
-    divTotal.dataset.month = 0;
-    divTotal.innerText = 'Total';
-    divTotal.addEventListener('click', handleMonthClick);
-    container.appendChild(divTotal);
-    sticky.appendChild(container);
-  }
-  window.createMonthFilter = createMonthFilter;
-  function createOpenTotalCard() {
-    if (document.getElementById('kOpenTotal')) return;
-    const openCard = document.getElementById('kpiOpen');
-    if (!openCard || !openCard.parentNode) return;
-    const card = document.createElement('div');
-    card.className = 'kpi-card slide-in-left';
-    card.id = 'kpiOpenTotal';
-    card.style.animationDelay = '0.15s';
-    card.innerHTML = '<div class="kpi-content"><div class="kpi-val" id="kOpenTotal" style="color:var(--color-amarelo)">0</div><div class="kpi-lbl">Abertos (Total)</div><div class="kpi-helper" id="kOpenTotalHelper">Todos os casos em aberto, sem filtro</div></div><div class="kpi-icon"><i class="fa-regular fa-clock"></i></div>';
-    openCard.parentNode.insertBefore(card, openCard.nextSibling);
-  }
-  window.createOpenTotalCard = createOpenTotalCard;
-})();
 </script>
 
 <script>
@@ -8842,19 +8704,6 @@ function renderKPIs() {
     $(&#x27;headerTotal&#x27;).innerText = total;
     $(&#x27;headerOpen&#x27;).innerText = open;
     $(&#x27;headerClosed&#x27;).innerText = closed;
-
-    // Atualizar valor de "Abertos (Total)" se existir
-    try {
-        const elTotalOpen = document.getElementById('kOpenTotal');
-        if (elTotalOpen && window.RAW && Array.isArray(window.RAW)) {
-            let openTot = 0;
-            window.RAW.forEach(item => {
-                const s = (item.statusNorm || item.status || '').toString().toLowerCase();
-                if (s.includes('aberto') && !s.includes('fechado') && !s.includes('conclu')) openTot++;
-            });
-            elTotalOpen.innerText = openTot.toLocaleString('pt-BR');
-        }
-    } catch(e){}
     
     $(&#x27;contextSummary&#x27;).innerHTML = `Exibindo &lt;span&gt;${total}&lt;/span&gt; registros filtrados de &lt;span&gt;${RAW.length}&lt;/span&gt; totais.`;
     
@@ -12487,7 +12336,7 @@ function updateDemandaInternaFromStorage() {
         const element = document.getElementById(&#x27;demandaInternaCount&#x27;);
         if (!element) return;
         try {
-            const savedReqs = localStorage.getItem(&#x27;dashboard_reqs_data&#x27;);
+            const savedReqs = localStorage.getItem(&#x27;dashboard_reqs_data&#x27;) || localStorage.getItem(&#x27;consolida_dashboard_data&#x27;);
             if (savedReqs) {
                 const parsedReqs = JSON.parse(savedReqs);
                 const data = Array.isArray(parsedReqs?.data) ? parsedReqs.data : [];
@@ -19323,6 +19172,13 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
                 };
 
                 localStorage.setItem(&#x27;consolida_dashboard_data&#x27;, JSON.stringify(dataToSave));
+                localStorage.setItem(&#x27;dashboard_reqs_data&#x27;, JSON.stringify(dataToSave));
+                try {
+                    const f = parent &amp;&amp; parent.document ? parent.document.getElementById(&#x27;frameConsolida&#x27;) : null;
+                    if (f &amp;&amp; f.contentWindow &amp;&amp; typeof f.contentWindow.updateDemandaInternaFromStorage === &#x27;function&#x27;) {
+                        f.contentWindow.updateDemandaInternaFromStorage();
+                    }
+                } catch (e) {}
                 return true;
             } catch (e) {
                 console.error(&#x27;Erro ao salvar no localStorage:&#x27;, e);
@@ -19447,13 +19303,6 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
         function initDashboard() {
             populateFilters();
             applyFilters();
-            // Cria filtro de meses e card de total em aberto após inicialização
-            if (typeof createMonthFilter === 'function') {
-                createMonthFilter();
-            }
-            if (typeof createOpenTotalCard === 'function') {
-                createOpenTotalCard();
-            }
         }
 
 // __CONSOLIDA_FAST_PATCH_V1__: normalização + filtros de sub/motivo
@@ -19747,21 +19596,6 @@ function populateFilters() {
             document.getElementById(&quot;kTMR&quot;).innerText = tmrDisplay;
             document.getElementById(&quot;kTopCat&quot;).innerText = topCat ? (topCat.length &gt; 15 ? topCat.substring(0, 15) + &quot;...&quot; : topCat) : &quot;-&quot;;
             document.getElementById(&quot;kAnalistas&quot;).innerText = uniqueAnalistas;
-
-            // Atualizar KPI de Abertos (Total) se existir
-            try {
-                const openTotalEl = document.getElementById('kOpenTotal');
-                if (openTotalEl) {
-                    let openTotalCount = 0;
-                    if (window.RAWDATA && Array.isArray(window.RAWDATA)) {
-                        openTotalCount = window.RAWDATA.filter(function(d) {
-                            const status = (d.statusNorm || d.status || '').toString().toLowerCase();
-                            return status.includes('aberto') && !status.includes('fechado') && !status.includes('conclu');
-                        }).length;
-                    }
-                    openTotalEl.innerText = openTotalCount.toLocaleString('pt-BR');
-                }
-            } catch (e) {}
         }
 
         function updateHeaderStats() {
