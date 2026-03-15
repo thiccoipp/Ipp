@@ -20367,75 +20367,272 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
 </script>
 
 
-<script id="thiago-v5-runtime">
+<script id="thiago-v6-runtime">
 (function(){
-  if (window.__THIAGO_V5_RUNTIME__) return;
-  window.__THIAGO_V5_RUNTIME__ = true;
-  function parseDate(v){ if(!v) return null; if(v instanceof Date && !isNaN(v)) return v; const s=String(v).trim(); if(!s) return null; if(/^\d{4}-\d{2}-\d{2}/.test(s)){ const d=new Date(s.length<=10?(s+'T12:00:00'):s); return isNaN(d)?null:d; } if(/^\d{2}\/\d{2}\/\d{4}/.test(s)){ const p=s.split(/[\sT]/)[0].split('/'); const d=new Date(parseInt(p[2],10), parseInt(p[1],10)-1, parseInt(p[0],10), 12,0,0); return isNaN(d)?null:d; } const d=new Date(s); return isNaN(d)?null:d; }
-  function norm(v){ try{ return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }catch(e){ return String(v||'').toLowerCase().trim(); } }
-  function safe(fn){ try{return fn();}catch(e){return null;} }
-  function patchConsolida(){
-    const frame=document.getElementById('frameConsolida'); const win=frame&&frame.contentWindow;
-    if(!win||win.__THIAGO_V5_CONSOLIDA__) return false;
-    if(typeof win.applyAllFilters!=='function'||typeof win.renderKPIs!=='function') return false;
-    win.__THIAGO_V5_CONSOLIDA__=true;
-    const originalRenderKPIs=win.renderKPIs, originalApplyAllFilters=win.applyAllFilters;
-    function ensureIndex(item){ if(!item||item.__v5idx) return item; const s=parseDate(item.dtStart||item.dataInicio||item['Data Inicio']); const e=parseDate(item.dtEnd||item.dataFim||item['Data Fim']); item.__startMs=s?+s:null; item.__endMs=e?+e:null; item.__searchNorm=norm([item.analista,item.solicitante,item.motivo,item.razaoSocial,item.nomeFantasia,item.cnpj,item.cnpjFormatted,item.gn,item.areaResponsavelResolucao,item.descricao,item.sub,item.subClassificacao,item.tipoContato,item.origemContato].filter(Boolean).join(' | ')); item.__motivoEncNorm=norm(typeof win.getMotivoEncerramentoLabel==='function'?win.getMotivoEncerramentoLabel(item):(item.motivoEncerramento||'')); item.__dirNorm=norm(typeof win.mapGNToDiretoria==='function'?win.mapGNToDiretoria(item.gnOriginal||item.gn||item['Gerência_Negócio']||item['Gerencia_Negocio']||''):''); item.__v5idx=1; return item; }
-    win.applyAllFilters=function(){ originalApplyAllFilters(); try{ win.renderKPIs(); }catch(e){ console.error('renderKPIs after apply',e);} };
-    win.renderKPIs=function(){
-      try{ originalRenderKPIs(); }catch(e){ console.error('orig renderKPIs',e); }
-      if(!Array.isArray(win.RAW)||!win.RAW.length) return;
-      let dEnd=null; try{ const de=win.document.getElementById('dateEnd'); if(de&&de.value) dEnd=new Date(de.value+'T23:59:59.999'); if(win.CHART_FILTERS&&win.CHART_FILTERS['Evo Date']){ const evo=parseDate(win.CHART_FILTERS['Evo Date']); if(evo){ dEnd=new Date(evo); dEnd.setHours(23,59,59,999); } } }catch(e){}
-      let open=0; const refEndMs=dEnd?+dEnd:null;
-      if(refEndMs){
-        const q=norm(safe(()=>win.document.getElementById('qSearch').value)||'');
-        const fMotivo=safe(()=>win.document.getElementById('motivoSelect').value)||'';
-        const fAnalista=safe(()=>Array.from(win.document.getElementById('analistaSelect').selectedOptions).map(o=>o.value))||[];
-        const fSub=safe(()=>win.document.getElementById('subSelect').value)||'';
-        const fTipoContato=safe(()=>win.document.getElementById('tipoContatoSelect').value)||'';
-        const fAreaResponsavel=safe(()=>win.document.getElementById('areaResponsavelSelect').value)||'';
-        const fOrigem=safe(()=>win.CHART_FILTERS['Origem'])||null;
-        const fGN=safe(()=>win.CHART_FILTERS['GN'])||null;
-        const fDiretoria=safe(()=>win.CHART_FILTERS['Diretoria'])||null;
-        const fCnpjCount=safe(()=>win.CHART_FILTERS['CnpjCount'])||null;
-        const fTopMotivo=safe(()=>win.CHART_FILTERS['TopMotivo'])||null;
-        const fMotivoEnc=safe(()=>win.CHART_FILTERS['MotivoEncerramento'])||null;
-        const fcrOnly=safe(()=>win.CHART_FILTERS['FCR_Sim'])||null;
-        const avgTimeOnly=safe(()=>win.CHART_FILTERS['AvgTime'])||null;
-        const chartAnalista=safe(()=>win.CHART_FILTERS['Doughnut Selection']['Analista'])||null;
-        const baseMatch=(rawItem)=>{ const item=ensureIndex(rawItem); if(q&&!(item.__searchNorm||'').includes(q)) return false; if(fMotivo&&item.motivo!==fMotivo) return false; if(fAnalista.length&&!fAnalista.includes(item.analista)) return false; if(fSub&&item.sub!==fSub&&item.subClassificacao!==fSub) return false; if(fTipoContato&&item.tipoContato!==fTipoContato) return false; if(fAreaResponsavel&&item.areaResponsavelResolucao!==fAreaResponsavel) return false; if(fOrigem&&item.origemContato!==fOrigem) return false; if(fGN&&item.gn!==fGN) return false; if(fDiretoria&&item.__dirNorm!==norm(fDiretoria)) return false; if(fCnpjCount&&!(item.cnpj&&String(item.cnpj).trim()!=='')) return false; if(fTopMotivo&&item.motivo!==fTopMotivo) return false; if(fMotivoEnc&&item.__motivoEncNorm!==norm(fMotivoEnc)) return false; if(fcrOnly&&item.fcr!=='Sim') return false; if(avgTimeOnly&&!(item.statusNorm==='Fechado'&&item.tempoResolucaoDias!==null)) return false; if(chartAnalista&&item.analista!==chartAnalista) return false; return true; };
-        open=win.RAW.filter(rawItem=>{ const item=ensureIndex(rawItem); return baseMatch(item)&&!!(item.__startMs&&item.__startMs<=refEndMs&&(!item.__endMs||item.__endMs>refEndMs)); }).length;
-      } else { open=(win.FILTERED||[]).filter(d=>d&&d.statusNorm==='Aberto').length; }
-      const kOpen=win.document.getElementById('kOpen'), hOpen=win.document.getElementById('headerOpen'), ctx=win.document.getElementById('contextSummary'), kOpenHelper=win.document.getElementById('kOpenHelper');
-      if(kOpen) kOpen.innerText=open; if(hOpen) hOpen.innerText=open; if(ctx&&Array.isArray(win.FILTERED)) ctx.innerHTML=`Exibindo <span>${win.FILTERED.length}</span> registros filtrados de <span>${win.RAW.length}</span> totais. Em aberto no recorte: <span>${open}</span>.`; if(kOpenHelper) kOpenHelper.innerText=dEnd?((win.CHART_FILTERS&&win.CHART_FILTERS['Status']==='Aberto')?'Clique para remover filtro de backlog aberto':'Ao filtrar período, Em Aberto considera o backlog até o fim do período'):((win.CHART_FILTERS&&win.CHART_FILTERS['Status']==='Aberto')?'Clique para remover filtro "Em Aberto"':'Clique para filtrar por status "Em Aberto"');
-      try{ if(typeof win.fillOpenBackCompact==='function'){ const ref=refEndMs||Date.now(); const openItems=win.RAW.map(ensureIndex).filter(item=>!!(item.__startMs&&item.__startMs<=ref&&(!item.__endMs||item.__endMs>ref))); const avgDays=openItems.length?(openItems.reduce((acc,item)=>acc+Math.max(0,Math.ceil((ref-item.__startMs)/86400000)),0)/openItems.length):0; const critical=openItems.filter(item=>Math.max(0,Math.ceil((ref-item.__startMs)/86400000))>6).length; win.fillOpenBackCompact(openItems.length?Math.round(avgDays*10)/10:0, critical, openItems.length); } }catch(e){}
+  if (window.__THIAGO_V6_RUNTIME__) return;
+  window.__THIAGO_V6_RUNTIME__ = true;
+
+  // evita estouro de quota do localStorage para cache operacional grande
+  try {
+    const originalSetItem = localStorage.setItem.bind(localStorage);
+    localStorage.setItem = function(k, v){
+      try {
+        if (/^cache_operational_/i.test(String(k||'')) && typeof v === 'string' && v.length > 1200000) return;
+        return originalSetItem(k, v);
+      } catch(err) {
+        try {
+          if (err && /QuotaExceeded/i.test(String(err.name || err.message || err))) {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+              const key = localStorage.key(i);
+              if (key && /^cache_/i.test(key)) keys.push(key);
+            }
+            keys.forEach(key => { try { localStorage.removeItem(key); } catch(e) {} });
+            if (!/^cache_operational_/i.test(String(k||''))) {
+              try { return originalSetItem(k, v); } catch(e2) {}
+            }
+            return;
+          }
+        } catch(e) {}
+        throw err;
+      }
     };
-    try{ setTimeout(()=>win.renderKPIs(),150); }catch(e){}
+  } catch(e) {}
+
+  function parseDate(v){
+    if(!v) return null;
+    if(v instanceof Date && !isNaN(v)) return v;
+    const s = String(v).trim();
+    if(!s) return null;
+    if(/^\d{4}-\d{2}-\d{2}/.test(s)) { const d = new Date(s.length<=10 ? (s+'T12:00:00') : s); return isNaN(d) ? null : d; }
+    if(/^\d{2}\/\d{2}\/\d{4}/.test(s)) { const p=s.split(/[\sT]/)[0].split('/'); const d=new Date(parseInt(p[2],10), parseInt(p[1],10)-1, parseInt(p[0],10), 12,0,0); return isNaN(d)?null:d; }
+    const d = new Date(s); return isNaN(d)?null:d;
+  }
+  function norm(v){
+    try { return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+    catch(e){ return String(v||'').toLowerCase().trim(); }
+  }
+
+  function patchConsolida(){
+    const frame = document.getElementById('frameConsolida');
+    const win = frame && frame.contentWindow;
+    if(!win || win.__THIAGO_V6_CONSOLIDA__) return false;
+    if(typeof win.applyAllFilters !== 'function' || typeof win.renderKPIs !== 'function') return false;
+    win.__THIAGO_V6_CONSOLIDA__ = true;
+
+    if (typeof win.enterpriseSend === 'function' && !win.__THIAGO_ENTERPRISE_REQS__) {
+      win.__THIAGO_ENTERPRISE_REQS__ = true;
+      const originalEnterprise = win.enterpriseSend;
+      win.enterpriseSend = async function(action, data, id){
+        const hasReqInterna = data && ((data.tipoRegistro === 'REQ_INTERNA') || (data.TipoRegistro === 'REQ_INTERNA') || (data.sourceModule === 'reqsInternas'));
+        if (!hasReqInterna) return originalEnterprise.apply(this, arguments);
+        const payload = { acao: String(action || '').toUpperCase() };
+        if (id !== null && id !== undefined && id !== '') payload.id_registro = String(id);
+        payload.tipoRegistro = data.tipoRegistro || data.TipoRegistro || 'REQ_INTERNA';
+        payload.TipoRegistro = payload.tipoRegistro;
+        payload.uid = data.uid || id || '';
+        payload.id = data.id || id || '';
+        payload.titulo = data.titulo !== undefined ? data.titulo : null;
+        payload['Título'] = data['Título'] !== undefined ? data['Título'] : null;
+        payload.descricao = data.descricao !== undefined ? data.descricao : (data['Descrição'] !== undefined ? data['Descrição'] : '');
+        payload['Descrição'] = payload.descricao;
+        payload.detalhes = data.detalhes !== undefined ? data.detalhes : payload.descricao;
+        payload.categoria = data.categoria !== undefined ? data.categoria : data.Categoria;
+        payload.Categoria = payload.categoria;
+        payload.status = data.status || '';
+        payload.Status = data.Status || payload.status;
+        payload.statusNorm = data.statusNorm || '';
+        payload.dataInicio = data.dataInicio || data['Data Inicio'] || null;
+        payload['Data Inicio'] = payload.dataInicio;
+        payload.dataFim = data.dataFim || data['Data Fim'] || null;
+        payload['Data Fim'] = payload.dataFim;
+        payload.dtStart = data.dtStart || payload.dataInicio;
+        payload.dtEnd = data.dtEnd || payload.dataFim;
+        payload.analista = data.analista || data.Analista || '';
+        payload.Analista = payload.analista;
+        payload.solicitante = data.solicitante || data['Solicitante'] || '';
+        payload['Solicitante'] = payload.solicitante;
+        payload.motivo = data.motivo || payload.categoria || '';
+        payload.subClassificacao = data.subClassificacao || 'Requisição Interna';
+        payload.areaResponsavelResolucao = data.areaResponsavelResolucao || payload.solicitante || '';
+        payload.origemContato = data.origemContato || 'Dashboard Req. Internas';
+        payload.tipoAtendimento = data.tipoAtendimento || 'Interno';
+        payload.gn = data.gn || 'Requisições Internas';
+        payload.razaoSocial = data.razaoSocial || 'Requisição Interna';
+        payload.cnpj = data.cnpj || '';
+        payload.caminho = data.caminho || 'personal/roberta_rocha_ipiranga_ipiranga/Lists/Consolida   Demandas Internas';
+        payload.tipoItem = data.tipoItem || 'Item';
+        payload.sourceModule = 'reqsInternas';
+        const headers = typeof win.getEnterpriseHeaders === 'function' ? win.getEnterpriseHeaders() : { 'Content-Type':'application/json', 'Accept':'application/json' };
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timeoutId = controller ? setTimeout(() => controller.abort(), 45000) : null;
+        try {
+          const r = await fetch(win.POWER_AUTOMATE_URL || 'https://late-pine-afcdtorre-github-json-save.thiago-junior.workers.dev/', {
+            method: 'POST', headers, body: JSON.stringify(payload), signal: controller ? controller.signal : undefined
+          });
+          const rawText = await r.text();
+          let parsed = null; try { parsed = rawText ? JSON.parse(rawText) : null; } catch(e) {}
+          if (!r.ok || (parsed && parsed.ok === false)) {
+            const msg = (parsed && (parsed.detail || parsed.error || parsed.message)) || rawText || ('Erro ' + r.status);
+            throw new Error(msg);
+          }
+          return parsed || { ok: true };
+        } catch (e) {
+          if (e && e.name === 'AbortError') throw new Error('Tempo limite excedido ao salvar no Worker.');
+          throw e;
+        } finally {
+          if (timeoutId) clearTimeout(timeoutId);
+        }
+      };
+    }
+
+    const originalRenderKPIs = win.renderKPIs;
+    const originalApplyAllFilters = win.applyAllFilters;
+
+    function ensureIndex(item){
+      if(!item || item.__v6idx) return item;
+      const s = parseDate(item.dtStart || item.dataInicio || item['Data Inicio']);
+      const e = parseDate(item.dtEnd || item.dataFim || item['Data Fim']);
+      item.__startMs = s ? +s : null;
+      item.__endMs = e ? +e : null;
+      item.__searchNorm = norm([item.analista,item.solicitante,item.motivo,item.razaoSocial,item.nomeFantasia,item.cnpj,item.cnpjFormatted,item.gn,item.areaResponsavelResolucao,item.descricao,item.sub,item.subClassificacao,item.tipoContato,item.origemContato].filter(Boolean).join(' | '));
+      item.__motivoEncNorm = norm(typeof win.getMotivoEncerramentoLabel==='function' ? win.getMotivoEncerramentoLabel(item) : (item.motivoEncerramento || ''));
+      item.__dirNorm = norm(typeof win.mapGNToDiretoria==='function' ? win.mapGNToDiretoria(item.gnOriginal || item.gn || item['Gerência_Negócio'] || item['Gerencia_Negocio'] || '') : '');
+      item.__v6idx = 1;
+      return item;
+    }
+
+    win.applyAllFilters = function(){ originalApplyAllFilters(); try{ win.renderKPIs(); }catch(e){ console.error('renderKPIs after apply', e); } };
+
+    win.renderKPIs = function(){
+      try { originalRenderKPIs(); } catch(e) { console.error('orig renderKPIs', e); }
+      if(!Array.isArray(win.RAW) || !win.RAW.length) return;
+      let dEnd = null;
+      try {
+        const de = win.document.getElementById('dateEnd');
+        if (de && de.value) dEnd = new Date(de.value + 'T23:59:59.999');
+        if (win.CHART_FILTERS && win.CHART_FILTERS['Evo Date']) {
+          const evo = parseDate(win.CHART_FILTERS['Evo Date']);
+          if (evo) { dEnd = new Date(evo); dEnd.setHours(23,59,59,999); }
+        }
+      } catch(e){}
+
+      // conceito pedido: acumulado do ano até o fim do período (jan; jan+fev; jan+fev+mar...)
+      let open = 0;
+      const refEndMs = dEnd ? +dEnd : null;
+      if (refEndMs) {
+        const cumulativeStart = new Date(dEnd.getFullYear(), 0, 1, 0, 0, 0, 0).getTime();
+        const q = norm(safe(()=>win.document.getElementById('qSearch').value) || '');
+        const fMotivo = safe(()=>win.document.getElementById('motivoSelect').value) || '';
+        const fAnalista = safe(()=>Array.from(win.document.getElementById('analistaSelect').selectedOptions).map(o=>o.value)) || [];
+        const fSub = safe(()=>win.document.getElementById('subSelect').value) || '';
+        const fTipoContato = safe(()=>win.document.getElementById('tipoContatoSelect').value) || '';
+        const fAreaResponsavel = safe(()=>win.document.getElementById('areaResponsavelSelect').value) || '';
+        const fOrigem = safe(()=>win.CHART_FILTERS['Origem']) || null;
+        const fGN = safe(()=>win.CHART_FILTERS['GN']) || null;
+        const fDiretoria = safe(()=>win.CHART_FILTERS['Diretoria']) || null;
+        const fCnpjCount = safe(()=>win.CHART_FILTERS['CnpjCount']) || null;
+        const fTopMotivo = safe(()=>win.CHART_FILTERS['TopMotivo']) || null;
+        const fMotivoEnc = safe(()=>win.CHART_FILTERS['MotivoEncerramento']) || null;
+        const fcrOnly = safe(()=>win.CHART_FILTERS['FCR_Sim']) || null;
+        const avgTimeOnly = safe(()=>win.CHART_FILTERS['AvgTime']) || null;
+        const chartAnalista = safe(()=>win.CHART_FILTERS['Doughnut Selection']['Analista']) || null;
+        const baseMatch = (rawItem)=>{ const item = ensureIndex(rawItem); if(q && !(item.__searchNorm||'').includes(q)) return false; if(fMotivo&&item.motivo!==fMotivo) return false; if(fAnalista.length&&!fAnalista.includes(item.analista)) return false; if(fSub&&item.sub!==fSub&&item.subClassificacao!==fSub) return false; if(fTipoContato&&item.tipoContato!==fTipoContato) return false; if(fAreaResponsavel&&item.areaResponsavelResolucao!==fAreaResponsavel) return false; if(fOrigem&&item.origemContato!==fOrigem) return false; if(fGN&&item.gn!==fGN) return false; if(fDiretoria&&item.__dirNorm!==norm(fDiretoria)) return false; if(fCnpjCount&&!(item.cnpj&&String(item.cnpj).trim()!=='')) return false; if(fTopMotivo&&item.motivo!==fTopMotivo) return false; if(fMotivoEnc&&item.__motivoEncNorm!==norm(fMotivoEnc)) return false; if(fcrOnly&&item.fcr!=='Sim') return false; if(avgTimeOnly&&!(item.statusNorm==='Fechado'&&item.tempoResolucaoDias!==null)) return false; if(chartAnalista&&item.analista!==chartAnalista) return false; return true; };
+        open = win.RAW.filter(rawItem => { const item = ensureIndex(rawItem); return baseMatch(item) && !!(item.__startMs && item.__startMs >= cumulativeStart && item.__startMs <= refEndMs && (!item.__endMs || item.__endMs > refEndMs)); }).length;
+      } else {
+        open = (win.FILTERED || []).filter(d => d && d.statusNorm === 'Aberto').length;
+      }
+      const kOpen = win.document.getElementById('kOpen');
+      const hOpen = win.document.getElementById('headerOpen');
+      const ctx = win.document.getElementById('contextSummary');
+      const kOpenHelper = win.document.getElementById('kOpenHelper');
+      if (kOpen) kOpen.innerText = open;
+      if (hOpen) hOpen.innerText = open;
+      if (ctx && Array.isArray(win.FILTERED)) ctx.innerHTML = `Exibindo <span>${win.FILTERED.length}</span> registros filtrados de <span>${win.RAW.length}</span> totais. Em aberto no recorte: <span>${open}</span>.`;
+      if (kOpenHelper) kOpenHelper.innerText = dEnd ? ((win.CHART_FILTERS && win.CHART_FILTERS['Status']==='Aberto') ? 'Clique para remover filtro de backlog aberto' : 'Ao filtrar período, Em Aberto considera o acumulado do ano até o fim do período') : ((win.CHART_FILTERS && win.CHART_FILTERS['Status']==='Aberto') ? 'Clique para remover filtro "Em Aberto"' : 'Clique para filtrar por status "Em Aberto"');
+    };
+
+    try { setTimeout(()=>win.renderKPIs(), 150); } catch(e){}
     return true;
   }
+
   function patchReqs(){
-    const frame=document.getElementById('frameReqs'); const win=frame&&frame.contentWindow;
-    if(!win||win.__THIAGO_V5_REQS__) return false;
-    if(!win.document||!win.document.getElementById('formAtendimento')) return false;
-    win.__THIAGO_V5_REQS__=true;
-    win.saveAtendimento=async function(){
-      const form=win.document.getElementById('formAtendimento'); if(!form.checkValidity()){ form.reportValidity(); return; }
-      const id=win.document.getElementById('atendimentoId').value, descricao=win.document.getElementById('inputDescricao').value.trim(), categoria=win.document.getElementById('inputCategoria').value, dataInicioInput=win.document.getElementById('inputDataInicio').value, dataFimInput=win.document.getElementById('inputDataFim').value, analista=win.document.getElementById('inputAnalista').value, solicitante=win.document.getElementById('inputSolicitante').value;
-      if(!descricao||!categoria||!dataInicioInput||!analista){ win.showToast('Preencha todos os campos obrigatórios','error'); return; }
-      const startDate=dataInicioInput?new Date(dataInicioInput):null, endDate=dataFimInput?new Date(dataFimInput):null, duration=(startDate&&endDate&&!isNaN(startDate)&&!isNaN(endDate))?Math.max(0,(endDate.getTime()-startDate.getTime())/60000):0;
-      const nextId=()=>{ const nums=(win.RAWDATA||[]).map(d=>{ const m=String(d.id||'').match(/(\d+)/g); return m?parseInt(m.join(''),10):NaN; }).filter(n=>!isNaN(n)); const nextNum=(nums.length?Math.max(...nums):0)+1; return `RI-${String(nextNum).padStart(6,'0')}`; };
+    const frame = document.getElementById('frameReqs');
+    const win = frame && frame.contentWindow;
+    if(!win || win.__THIAGO_V6_REQS__) return false;
+    if(!win.document || !win.document.getElementById('formAtendimento')) return false;
+    win.__THIAGO_V6_REQS__ = true;
+
+    win.saveAtendimento = async function(){
+      const form = win.document.getElementById('formAtendimento');
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      const id = win.document.getElementById('atendimentoId').value;
+      const descricao = win.document.getElementById('inputDescricao').value.trim();
+      const categoria = win.document.getElementById('inputCategoria').value;
+      const dataInicioInput = win.document.getElementById('inputDataInicio').value;
+      const dataFimInput = win.document.getElementById('inputDataFim').value;
+      const analista = win.document.getElementById('inputAnalista').value;
+      const solicitante = win.document.getElementById('inputSolicitante').value;
+      if (!descricao || !categoria || !dataInicioInput || !analista) { win.showToast('Preencha todos os campos obrigatórios', 'error'); return; }
+      const startDate = dataInicioInput ? new Date(dataInicioInput) : null;
+      const endDate = dataFimInput ? new Date(dataFimInput) : null;
+      const duration = (startDate && endDate && !isNaN(startDate) && !isNaN(endDate)) ? Math.max(0, (endDate.getTime() - startDate.getTime()) / 60000) : 0;
+      const nextId = ()=>{ const nums=(win.RAWDATA||[]).map(d=>{ const m=String(d.id||'').match(/(\d+)/g); return m?parseInt(m.join(''),10):NaN; }).filter(n=>!isNaN(n)); const nextNum=(nums.length?Math.max(...nums):0)+1; return `RI-${String(nextNum).padStart(6,'0')}`; };
       const recordId=id||nextId(), statusLabel=endDate?'Concluído':'Em Aberto', statusNorm=endDate?'Fechado':'Aberto', startIso=startDate&&!isNaN(startDate)?startDate.toISOString():null, endIso=endDate&&!isNaN(endDate)?endDate.toISOString():null;
       const localRecord={id:recordId, uid:recordId, TipoRegistro:'REQ_INTERNA', 'TipoRegistro':'REQ_INTERNA', 'Título':null, titulo:null, 'Descrição':descricao, descricao, detalhes:descricao, 'Categoria':categoria, categoria, motivo:categoria, 'Data Inicio':startIso, 'Data Fim':endIso, dtStart:startIso, dtEnd:endIso, start:startDate, end:endDate, duration, 'Analista':analista, analista, 'Solicitante':solicitante||'Desenv Jornadas Digitais', solicitante:solicitante||'Desenv Jornadas Digitais', 'Tipo de Item':'Item', status:statusLabel, 'Status':statusLabel, statusNorm, subClassificacao:'Requisição Interna', areaResponsavelResolucao:solicitante||'Desenv Jornadas Digitais', origemContato:'Dashboard Req. Internas', tipoContato:'Interno', gn:'Requisições Internas', razaoSocial:'Requisição Interna', cnpj:''};
       const payload={id:recordId, uid:recordId, tipoRegistro:'REQ_INTERNA', TipoRegistro:'REQ_INTERNA', categoria, Categoria:categoria, titulo:null, 'Título':null, descricao, 'Descrição':descricao, detalhes:descricao, status:statusLabel, Status:statusLabel, statusNorm, dataInicio:startIso, 'Data Inicio':startIso, dataFim:endIso, 'Data Fim':endIso, dtStart:startIso, dtEnd:endIso, analista, Analista:analista, solicitante:solicitante||'Desenv Jornadas Digitais', 'Solicitante':solicitante||'Desenv Jornadas Digitais', motivo:categoria, subClassificacao:'Requisição Interna', areaResponsavelResolucao:solicitante||'Desenv Jornadas Digitais', origemContato:'Dashboard Req. Internas', tipoAtendimento:'Interno', gn:'Requisições Internas', razaoSocial:'Requisição Interna', cnpj:'', caminho:'personal/roberta_rocha_ipiranga_ipiranga/Lists/Consolida   Demandas Internas', tipoItem:'Item', sourceModule:'reqsInternas'};
-      win.showLoading(true, id?'Salvando no endpoint e atualizando...':'Enviando para endpoint e criando...');
-      try{ const parentWin=window; const consolidaFrame=parentWin.document.getElementById('frameConsolida'); const enterprise=consolidaFrame&&consolidaFrame.contentWindow?consolidaFrame.contentWindow.enterpriseSend:null; if(typeof enterprise!=='function') throw new Error('enterpriseSend do dashboard principal não disponível'); await enterprise(id?'UPDATE':'CREATE', payload, recordId); if(id){ const idx=(win.RAWDATA||[]).findIndex(item=>String(item.id)===String(id)); if(idx===-1) throw new Error('Registro não encontrado para atualização'); win.RAWDATA[idx]={...win.RAWDATA[idx], ...localRecord}; } else { win.RAWDATA.unshift(localRecord); } win.currentDataSource='github_json'; try{ win.saveDataToLocalStorage(); }catch(e){} try{ win.updateDataInfoDisplay(); }catch(e){} try{ win.initDashboard(); }catch(e){} try{ win.closeModal(); }catch(e){} win.showToast(id?'Atualizado no endpoint e localmente com sucesso!':'Criado no endpoint e localmente com sucesso!','success'); setTimeout(()=>{ try{ if(typeof win.carregarDaAPI==='function') win.carregarDaAPI(false); }catch(e){} },1200); } catch(error){ console.error('Erro ao salvar req interna:',error); win.showToast('Erro ao salvar no endpoint: '+(error&&error.message?error.message:error),'error'); } finally { win.showLoading(false); }
+      win.showLoading(true, id ? 'Salvando no endpoint e atualizando...' : 'Enviando para endpoint e criando...');
+      try {
+        const parentWin = window;
+        const consolidaFrame = parentWin.document.getElementById('frameConsolida');
+        const enterprise = consolidaFrame && consolidaFrame.contentWindow ? consolidaFrame.contentWindow.enterpriseSend : null;
+        if (typeof enterprise !== 'function') throw new Error('enterpriseSend do dashboard principal não disponível');
+        await enterprise(id ? 'UPDATE' : 'CREATE', payload, recordId);
+        if (id) {
+          const idx = (win.RAWDATA||[]).findIndex(item => String(item.id) === String(id));
+          if (idx === -1) throw new Error('Registro não encontrado para atualização');
+          win.RAWDATA[idx] = { ...win.RAWDATA[idx], ...localRecord };
+        } else {
+          win.RAWDATA.unshift(localRecord);
+        }
+        win.currentDataSource = 'github_json';
+        try { win.saveDataToLocalStorage(); } catch(e){}
+        try { win.updateDataInfoDisplay(); } catch(e){}
+        try { win.initDashboard(); } catch(e){}
+        try { win.closeModal(); } catch(e){}
+        win.showToast(id ? 'Atualizado no endpoint e localmente com sucesso!' : 'Criado no endpoint e localmente com sucesso!', 'success');
+        setTimeout(()=>{ try { if (typeof win.carregarDaAPI === 'function') win.carregarDaAPI(false); } catch(e){} }, 1200);
+      } catch(error) {
+        console.error('Erro ao salvar req interna:', error);
+        win.showToast('Erro ao salvar no endpoint: ' + (error && error.message ? error.message : error), 'error');
+      } finally {
+        win.showLoading(false);
+      }
     };
     return true;
   }
-  function ensureVisible(){ try{ const c=document.getElementById('frameConsolida'), r=document.getElementById('frameReqs'); const active=(c&&c.classList&&c.classList.contains('active'))||(r&&r.classList&&r.classList.contains('active')); if(!active&&c&&c.classList) c.classList.add('active'); }catch(e){} }
+
+  function ensureVisible(){
+    try {
+      const c = document.getElementById('frameConsolida');
+      const r = document.getElementById('frameReqs');
+      const active = (c && c.classList && c.classList.contains('active')) || (r && r.classList && r.classList.contains('active'));
+      if (!active && c && c.classList) c.classList.add('active');
+    } catch(e) {}
+  }
+
   function boot(){ ensureVisible(); patchConsolida(); patchReqs(); }
-  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot,300); setTimeout(boot,1200); setTimeout(boot,2400); }); } else { setTimeout(boot,300); setTimeout(boot,1200); setTimeout(boot,2400); }
-  const fc=document.getElementById('frameConsolida'), fr=document.getElementById('frameReqs'); if(fc) fc.addEventListener('load', ()=>setTimeout(boot,150)); if(fr) fr.addEventListener('load', ()=>setTimeout(boot,150));
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot,300); setTimeout(boot,1200); setTimeout(boot,2400); });
+  } else {
+    setTimeout(boot,300); setTimeout(boot,1200); setTimeout(boot,2400);
+  }
+
+  const fc = document.getElementById('frameConsolida');
+  const fr = document.getElementById('frameReqs');
+  if (fc) fc.addEventListener('load', ()=>setTimeout(boot,150));
+  if (fr) fr.addEventListener('load', ()=>setTimeout(boot,150));
 })();
 </script>
 
@@ -20457,7 +20654,6 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
             const frameConsolida = document.getElementById('frameConsolida');
             const frameReqs = document.getElementById('frameReqs');
             const indicator = document.getElementById('indicator');
-
             const safeRemove = (el, cls) => { try { if (el && el.classList) el.classList.remove(cls); } catch(e) {} };
             const safeAdd = (el, cls) => { try { if (el && el.classList) el.classList.add(cls); } catch(e) {} };
 
@@ -20472,9 +20668,7 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
 
                 safeRemove(frameConsolida, 'active');
                 safeRemove(frameReqs, 'active');
-
                 requestAnimationFrame(function(){ safeAdd(next, 'active'); });
-
                 if (indicator) indicator.className = (view === 'consolida') ? 'consolida' : 'reqs';
                 currentView = view;
             } else {
