@@ -40007,5 +40007,25 @@
     "uid": 4894916,
     "createdAt": "2026-03-15T05:10:14.251Z",
     "updatedAt": "2026-03-15T05:10:14.251Z"
+  },
+  {
+    "status": "Em Aberto",
+    "dataInício": "2026-03-15",
+    "fcr": "Não",
+    "analista": "André",
+    "motivo": "Ajuste Lat Long",
+    "subClassificacao": "Comunicação",
+    "cnpj": "01634812000151",
+    "razaoSocial": "PASSAPORTE",
+    "tipoAtendimento": "Ativo",
+    "origemContato": "Portal",
+    "gn": "G.N. Rodovia Ribeirao Preto",
+    "solicitante": "CT",
+    "areaResponsavelResolucao": "Torre de Expansão",
+    "detalhes": "PASSAPORTR",
+    "id": 4894917,
+    "uid": 4894917,
+    "createdAt": "2026-03-15T06:24:45.216Z",
+    "updatedAt": "2026-03-15T06:24:45.216Z"
   }
 ]
