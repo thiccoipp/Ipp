@@ -5661,25 +5661,25 @@ function chamarApi(forceRefresh = false) {
 
 async function syncAfterWrite() {
     try {
-        if (typeof APICache !== 'undefined') {
-            APICache.clear('operational_data_json_raw');
-            APICache.clear('operational_timestamp_json_raw');
+        if (typeof APICache !== &#x27;undefined&#x27;) {
+            APICache.clear(&#x27;operational_data_json_raw&#x27;);
+            APICache.clear(&#x27;operational_timestamp_json_raw&#x27;);
         }
     } catch (e) {}
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i &lt; 6; i++) {
         try {
             await chamarApi(true);
-            if (typeof applyAllFilters === 'function') applyAllFilters();
-            if (typeof updateKPIs === 'function') updateKPIs();
+            if (typeof applyAllFilters === &#x27;function&#x27;) applyAllFilters();
+            if (typeof updateKPIs === &#x27;function&#x27;) updateKPIs();
             return true;
         } catch (e) {
-            await new Promise(r => setTimeout(r, 1200));
+            await new Promise(r =&gt; setTimeout(r, 1200));
         }
     }
 
-    if (typeof showToast === 'function') {
-        showToast('Alteração salva, mas a sincronização visual demorou alguns segundos.', 'info');
+    if (typeof showToast === &#x27;function&#x27;) {
+        showToast(&#x27;Alteração salva, mas a sincronização visual demorou alguns segundos.&#x27;, &#x27;info&#x27;);
     }
     return false;
 }
@@ -5783,7 +5783,7 @@ function processApiData(apiResponse, fromCache = false) {
             if (!solicitanteRaw || solicitanteRaw === &quot;&quot;) { solicitanteRaw = &quot;Não Informado&quot;; }
 
             let gn = row.GN?.Value || row[&quot;gn&quot;] || row[&quot;GN&quot;] || &quot;&quot;;
-            // Normalização de legado (compat): 'Urb Sp Abc' deve equivaler a 'G.N. Urbano Sp Abc'
+            // Normalização de legado (compat): &#x27;Urb Sp Abc&#x27; deve equivaler a &#x27;G.N. Urbano Sp Abc&#x27;
             if (typeof gn === &#x27;string&#x27; &amp;&amp; /^\s*Urb\s+Sp\s+Abc\s*$/i.test(gn)) {
                 gn = &#x27;G.N. Urbano Sp Abc&#x27;;
             }
@@ -8458,48 +8458,48 @@ window.GN_DIRETORIA_MAP = window.GN_DIRETORIA_MAP || {
   &#x27;g.n. hipermercado exemplo&#x27;: &#x27;Diretoria Hipermercado&#x27;
 };
 
-if (typeof window.__normGNKey !== 'function') {
+if (typeof window.__normGNKey !== &#x27;function&#x27;) {
   window.__normGNKey = function(v) {
-    return String(v||'').trim().replace(/\s+/g,' ').toLowerCase();
+    return String(v||&#x27;&#x27;).trim().replace(/\s+/g,&#x27; &#x27;).toLowerCase();
   };
 }
 
-if (typeof window.mapGNToDiretoria !== 'function') {
+if (typeof window.mapGNToDiretoria !== &#x27;function&#x27;) {
   window.mapGNToDiretoria = function(gn) {
     const key = window.__normGNKey(gn);
     const MAP = window.GN_DIRETORIA_MAP || {};
 
-    // Suporte à GN já normalizada (ex.: 'Urb Belem', 'Rod. Curitiba').
-    // Converte prefixos curtos para o formato do mapa ('g.n. urbano ...' / 'g.n. rodovia ...').
-    const _k = key.split('.').join('').trim();
-  // Caso especial (SP): Sp Abc deve cair em Diretoria Neg Rede - Sp (cobre 'Urb Sp Abc' e 'G.N. Urbano Sp Abc')
-  if (_k.includes('sp abc') && (_k.includes('urb') || _k.includes('urbano') || _k.includes('gn urbano') || _k.includes('gnurbano'))) {
-    return 'Diretoria Neg Rede - Sp';
+    // Suporte à GN já normalizada (ex.: &#x27;Urb Belem&#x27;, &#x27;Rod. Curitiba&#x27;).
+    // Converte prefixos curtos para o formato do mapa (&#x27;g.n. urbano ...&#x27; / &#x27;g.n. rodovia ...&#x27;).
+    const _k = key.split(&#x27;.&#x27;).join(&#x27;&#x27;).trim();
+  // Caso especial (SP): Sp Abc deve cair em Diretoria Neg Rede - Sp (cobre &#x27;Urb Sp Abc&#x27; e &#x27;G.N. Urbano Sp Abc&#x27;)
+  if (_k.includes(&#x27;sp abc&#x27;) &amp;&amp; (_k.includes(&#x27;urb&#x27;) || _k.includes(&#x27;urbano&#x27;) || _k.includes(&#x27;gn urbano&#x27;) || _k.includes(&#x27;gnurbano&#x27;))) {
+    return &#x27;Diretoria Neg Rede - Sp&#x27;;
   }
 
-    if (_k.startsWith('urb ')) {
-      const cand = 'g.n. urbano ' + _k.slice(4);
+    if (_k.startsWith(&#x27;urb &#x27;)) {
+      const cand = &#x27;g.n. urbano &#x27; + _k.slice(4);
       if (MAP[cand]) return MAP[cand];
     }
-    if (_k.startsWith('rod ')) {
-      const cand = 'g.n. rodovia ' + _k.slice(4);
+    if (_k.startsWith(&#x27;rod &#x27;)) {
+      const cand = &#x27;g.n. rodovia &#x27; + _k.slice(4);
       if (MAP[cand]) return MAP[cand];
     }
-    if (_k.startsWith('rodovia ')) {
-      const cand = 'g.n. rodovia ' + _k.slice(7);
+    if (_k.startsWith(&#x27;rodovia &#x27;)) {
+      const cand = &#x27;g.n. rodovia &#x27; + _k.slice(7);
       if (MAP[cand]) return MAP[cand];
     }
-    if (_k.startsWith('urbano ')) {
-      const cand = 'g.n. urbano ' + _k.slice(7);
+    if (_k.startsWith(&#x27;urbano &#x27;)) {
+      const cand = &#x27;g.n. urbano &#x27; + _k.slice(7);
       if (MAP[cand]) return MAP[cand];
     }
 
-    return MAP[key] || 'Diretoria (não mapeada)';
+    return MAP[key] || &#x27;Diretoria (não mapeada)&#x27;;
   };
 }
 
 // Alias no escopo global do documento (para chamadas diretas)
-if (typeof mapGNToDiretoria !== 'function') {
+if (typeof mapGNToDiretoria !== &#x27;function&#x27;) {
   function mapGNToDiretoria(gn) {
     return window.mapGNToDiretoria(gn);
   }
@@ -8986,30 +8986,30 @@ function __normGNKey(v){
 
 function mapGNToDiretoria(gn){
   const key = __normGNKey(gn);
-  const MAP = (typeof GN_DIRETORIA_MAP !== 'undefined' ? GN_DIRETORIA_MAP : (window.GN_DIRETORIA_MAP||{}));
+  const MAP = (typeof GN_DIRETORIA_MAP !== &#x27;undefined&#x27; ? GN_DIRETORIA_MAP : (window.GN_DIRETORIA_MAP||{}));
 
-  // Suporte à GN já normalizada (ex.: 'Urb Belem', 'Rod. Curitiba').
-  // Converte prefixos curtos para o formato do mapa ('g.n. urbano ...' / 'g.n. rodovia ...').
-  const _k = key.split('.').join('').trim();
-  // Caso especial (SP): Sp Abc deve cair em Diretoria Neg Rede - Sp (cobre 'Urb Sp Abc' e 'G.N. Urbano Sp Abc')
-  if (_k.includes('sp abc') && (_k.includes('urb') || _k.includes('urbano') || _k.includes('gn urbano') || _k.includes('gnurbano'))) {
-    return 'Diretoria Neg Rede - Sp';
+  // Suporte à GN já normalizada (ex.: &#x27;Urb Belem&#x27;, &#x27;Rod. Curitiba&#x27;).
+  // Converte prefixos curtos para o formato do mapa (&#x27;g.n. urbano ...&#x27; / &#x27;g.n. rodovia ...&#x27;).
+  const _k = key.split(&#x27;.&#x27;).join(&#x27;&#x27;).trim();
+  // Caso especial (SP): Sp Abc deve cair em Diretoria Neg Rede - Sp (cobre &#x27;Urb Sp Abc&#x27; e &#x27;G.N. Urbano Sp Abc&#x27;)
+  if (_k.includes(&#x27;sp abc&#x27;) &amp;&amp; (_k.includes(&#x27;urb&#x27;) || _k.includes(&#x27;urbano&#x27;) || _k.includes(&#x27;gn urbano&#x27;) || _k.includes(&#x27;gnurbano&#x27;))) {
+    return &#x27;Diretoria Neg Rede - Sp&#x27;;
   }
 
-  if (_k.startsWith('urb ')) {
-    const cand = 'g.n. urbano ' + _k.slice(4);
+  if (_k.startsWith(&#x27;urb &#x27;)) {
+    const cand = &#x27;g.n. urbano &#x27; + _k.slice(4);
     if (MAP[cand]) return MAP[cand];
   }
-  if (_k.startsWith('rod ')) {
-    const cand = 'g.n. rodovia ' + _k.slice(4);
+  if (_k.startsWith(&#x27;rod &#x27;)) {
+    const cand = &#x27;g.n. rodovia &#x27; + _k.slice(4);
     if (MAP[cand]) return MAP[cand];
   }
-  if (_k.startsWith('rodovia ')) {
-    const cand = 'g.n. rodovia ' + _k.slice(7);
+  if (_k.startsWith(&#x27;rodovia &#x27;)) {
+    const cand = &#x27;g.n. rodovia &#x27; + _k.slice(7);
     if (MAP[cand]) return MAP[cand];
   }
-  if (_k.startsWith('urbano ')) {
-    const cand = 'g.n. urbano ' + _k.slice(7);
+  if (_k.startsWith(&#x27;urbano &#x27;)) {
+    const cand = &#x27;g.n. urbano &#x27; + _k.slice(7);
     if (MAP[cand]) return MAP[cand];
   }
 
@@ -9023,9 +9023,9 @@ function updateDiretoriaChart(data){
     const canvas = document.getElementById(&quot;chartDiretoria&quot;);
     if(!canvas) return;
 
-    // FIX Canvas reuse: evita 'Canvas is already in use' (Chart.js)
+    // FIX Canvas reuse: evita &#x27;Canvas is already in use&#x27; (Chart.js)
     try {
-      const __prev = (typeof Chart !== 'undefined' && Chart.getChart) ? Chart.getChart(canvas) : null;
+      const __prev = (typeof Chart !== &#x27;undefined&#x27; &amp;&amp; Chart.getChart) ? Chart.getChart(canvas) : null;
       if (__prev) __prev.destroy();
     } catch(e) {}
 
@@ -9095,23 +9095,23 @@ function updateDiretoriaChart(data){
             // Cor do rótulo adaptativa: branco em barras escuras, preto em barras claras
             color: function(ctx){
               try{
-                var bg = ctx.dataset && ctx.dataset.backgroundColor;
+                var bg = ctx.dataset &amp;&amp; ctx.dataset.backgroundColor;
                 var c = Array.isArray(bg) ? bg[ctx.dataIndex] : bg;
                 if(!c) return &quot;#111827&quot;;
                 var r=0,g=0,b=0;
-                if(typeof c === 'string'){
-                  if(c.indexOf('rgb')===0){
-                    var s = c.replace('rgba(','').replace('rgb(','').replace(')','');
-                    var p = s.split(',');
+                if(typeof c === &#x27;string&#x27;){
+                  if(c.indexOf(&#x27;rgb&#x27;)===0){
+                    var s = c.replace(&#x27;rgba(&#x27;,&#x27;&#x27;).replace(&#x27;rgb(&#x27;,&#x27;&#x27;).replace(&#x27;)&#x27;,&#x27;&#x27;);
+                    var p = s.split(&#x27;,&#x27;);
                     r = parseFloat(p[0])||0; g = parseFloat(p[1])||0; b = parseFloat(p[2])||0;
-                  } else if(c.charAt(0)==='#'){
+                  } else if(c.charAt(0)===&#x27;#&#x27;){
                     var hex=c.slice(1);
-                    if(hex.length===3){ hex = hex.split('').map(function(x){return x+x}).join(''); }
+                    if(hex.length===3){ hex = hex.split(&#x27;&#x27;).map(function(x){return x+x}).join(&#x27;&#x27;); }
                     r=parseInt(hex.slice(0,2),16)||0; g=parseInt(hex.slice(2,4),16)||0; b=parseInt(hex.slice(4,6),16)||0;
                   }
                 }
                 var lum = (0.2126*r + 0.7152*g + 0.0722*b)/255;
-                return lum < 0.55 ? &quot;#FFFFFF&quot; : &quot;#111827&quot;;
+                return lum &lt; 0.55 ? &quot;#FFFFFF&quot; : &quot;#111827&quot;;
               }catch(e){ return &quot;#111827&quot;; }
             },
             font: { weight: &quot;900&quot;, size: 12 },
@@ -12333,37 +12333,27 @@ body.light-theme #dataTable thead th {
 // ============ DEMANDA INTERNA (INTEGRAÇÃO LOCAL) ============
 function updateDemandaInternaFromStorage() {
     try {
-        const element = document.getElementById('demandaInternaCount');
+        const element = document.getElementById(&#x27;demandaInternaCount&#x27;);
         if (!element) return;
-
-        fetch('https://raw.githubusercontent.com/thiccoipp/Ipp/main/payload_unificado_consolida_reqs.json', { cache: 'no-store' })
-            .then(resp => { if (!resp.ok) throw new Error('Falha ao buscar payload oficial'); return resp.json(); })
-            .then(payload => {
-                const count = Array.isArray(payload?.reqsInternas)
-                    ? payload.reqsInternas.length
-                    : (payload?.meta?.counts?.reqsInternas || 0);
-                element.innerText = String(count || 0);
-                if (count > 0) {
-                    element.style.color = 'var(--text-primary)';
-                    element.style.fontWeight = '700';
+        try {
+            const savedReqs = localStorage.getItem(&#x27;dashboard_reqs_data&#x27;);
+            if (savedReqs) {
+                const parsedReqs = JSON.parse(savedReqs);
+                const data = Array.isArray(parsedReqs?.data) ? parsedReqs.data : [];
+                const count = data.length || 0;
+                element.innerText = String(count);
+                if (count &gt; 0) {
+                    element.style.color = &#x27;var(--text-primary)&#x27;;
+                    element.style.fontWeight = &#x27;700&#x27;;
                 }
-            })
-            .catch(() => {
-                try {
-                    const savedData = localStorage.getItem('consolida_dashboard_data');
-                    if (savedData) {
-                        const parsedData = JSON.parse(savedData);
-                        const count = parsedData.count || 0;
-                        element.innerText = String(count);
-                        return;
-                    }
-                } catch(e) {}
-                element.innerText = '0';
-            });
+                return;
+            }
+        } catch(e) {}
+        element.innerText = &#x27;0&#x27;;
     } catch (error) {
-        console.error('Erro ao atualizar contador de demandas internas:', error);
-        const element = document.getElementById('demandaInternaCount');
-        if(element) element.innerText = '--';
+        console.error(&#x27;Erro ao atualizar contador de demandas internas:&#x27;, error);
+        const element = document.getElementById(&#x27;demandaInternaCount&#x27;);
+        if (element) element.innerText = &#x27;--&#x27;;
     }
 }
 
@@ -15088,13 +15078,13 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
 
     // API LAYER
     async function enterpriseSend(action, data, id) {
-        const p = { acao: String(action || '').toUpperCase() };
-        if (id !== null &amp;&amp; id !== undefined &amp;&amp; id !== '') p.id_registro = parseInt(id, 10);
+        const p = { acao: String(action || &#x27;&#x27;).toUpperCase() };
+        if (id !== null &amp;&amp; id !== undefined &amp;&amp; id !== &#x27;&#x27;) p.id_registro = parseInt(id, 10);
         if (data) {
-            if (data.status !== undefined &amp;&amp; data.status !== null &amp;&amp; data.status !== '') p.status = data.status;
+            if (data.status !== undefined &amp;&amp; data.status !== null &amp;&amp; data.status !== &#x27;&#x27;) p.status = data.status;
             if (data.dataInicio) p[&quot;dataInício&quot;] = data.dataInicio;
             if (data.dataFim) p.dataFim = data.dataFim;
-            if (data.fcr !== undefined &amp;&amp; data.fcr !== null &amp;&amp; data.fcr !== '') p.fcr = data.fcr;
+            if (data.fcr !== undefined &amp;&amp; data.fcr !== null &amp;&amp; data.fcr !== &#x27;&#x27;) p.fcr = data.fcr;
             if (data.analista) p.analista = data.analista;
             if (data.motivo) p.motivo = data.motivo;
             if (data.motivoEncerramento) p.motivoEncerramento = data.motivoEncerramento;
@@ -15110,7 +15100,7 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
             if (data.updates) p.updates = data.updates;
             if (data.historicoContatos) p.historicoContatos = data.historicoContatos;
         }
-        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const controller = typeof AbortController !== &#x27;undefined&#x27; ? new AbortController() : null;
         const timeoutId = controller ? setTimeout(() =&gt; controller.abort(), 45000) : null;
         try {
             const r = await fetch(POWER_AUTOMATE_URL, {
@@ -15128,7 +15118,7 @@ body:not(.light-theme) .wizard-step-info h4{color:var(--color-amarelo)!important
             }
             return parsed || { ok: true };
         } catch (e) {
-            if (e &amp;&amp; e.name === 'AbortError') throw new Error('Tempo limite excedido ao salvar no Worker.');
+            if (e &amp;&amp; e.name === &#x27;AbortError&#x27;) throw new Error(&#x27;Tempo limite excedido ao salvar no Worker.&#x27;);
             throw e;
         } finally {
             if (timeoutId) clearTimeout(timeoutId);
@@ -18467,7 +18457,7 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
 &lt;div&gt;⏳ Carregando...&lt;/div&gt;
 &lt;div style=&quot;margin-top: 15px;&quot;&gt;
 &lt;button class=&quot;btn&quot; onclick=&quot;loadRemoteData()&quot; style=&quot;margin-top: 10px;&quot;&gt;
-&lt;i class=&quot;fa-solid fa-cloud-arrow-down&quot;&gt;&lt;/i&gt; Carregar Base RAW
+&lt;i class=&quot;fa-solid fa-cloud-arrow-down&quot;&gt;&lt;/i&gt; Carregar Base Remota
                                         &lt;/button&gt;
 &lt;/div&gt;
 &lt;/td&gt;
@@ -18510,11 +18500,10 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
 
         // Power Automate API Endpoint
         // ENDPOINT 1 - SOMENTE LEITURA (READ)
-        const RAW_XLSX_URL = &quot;https://raw.githubusercontent.com/thiccoipp/Ipp/main/payload_unificado_consolida_reqs.json&quot;;
-        const API_READ = RAW_XLSX_URL;
+        const API_READ = &quot;https://default72b5f4168f414c88a6a0bb4b913838.88.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/a19a0f1797104e25af86958867714470/triggers/manual/paths/invoke?api-version=1&amp;sp=%2Ftriggers%2Fmanual%2Frun&amp;sv=1.0&amp;sig=YLvg7g6zkPmrUrwVimDbc8Yn4TI3XEEyMSVbnGVDSt0&quot;;
 
-        // CRUD agora é local no navegador (sem API)
-        const API_CRUD = null;
+        // ENDPOINT 2 - CRUD (CREATE / UPDATE / DELETE)
+        const API_CRUD = &quot;https://default72b5f4168f414c88a6a0bb4b913838.88.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ed153afe0a1d4ef7aef31f9719c33402/triggers/manual/paths/invoke?api-version=1&amp;sp=%2Ftriggers%2Fmanual%2Frun&amp;sv=1.0&amp;sig=JAp7fc-ZHP-6RSaTpCXVZjNhzHJw3EpdpiNAHFlP85g&quot;;
 
         let RAWDATA = [];
         let FILTEREDDATA = [];
@@ -18580,7 +18569,7 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
 
         function escapeHtml(text) {
             if (text === null || text === undefined) return &#x27;&#x27;;
-            const map = { &#x27;&amp;&#x27;: &#x27;&amp;amp;&#x27;, &#x27;&lt;&#x27;: &#x27;&lt;&#x27;, &#x27;&gt;&#x27;: &#x27;&gt;&#x27;, &#x27;&quot;&#x27;: &#x27;&quot;&#x27;, &quot;&#x27;&quot;: &#x27;&amp;#039;&#x27; };
+            const map = { &#x27;&amp;&#x27;: &#x27;&amp;amp;&#x27;, &#x27;&lt;&#x27;: &#x27;&amp;lt;&#x27;, &#x27;&gt;&#x27;: &#x27;&amp;gt;&#x27;, &#x27;&quot;&#x27;: &#x27;&amp;quot;&#x27;, &quot;&#x27;&quot;: &#x27;&amp;#039;&#x27; };
             return String(text).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, m =&gt; map[m]);
         }
 
@@ -18682,6 +18671,8 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
             if (!form.checkValidity()) { form.reportValidity(); return; }
 
             const id = document.getElementById(&#x27;atendimentoId&#x27;).value;
+            const acao = id ? &#x27;UPDATE&#x27; : &#x27;INSERT&#x27;;
+
             const descricao = document.getElementById(&#x27;inputDescricao&#x27;).value.trim();
             const categoria = document.getElementById(&#x27;inputCategoria&#x27;).value;
             const dataInicioInput = document.getElementById(&#x27;inputDataInicio&#x27;).value;
@@ -18694,44 +18685,48 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
                 return;
             }
 
-            const startDate = dataInicioInput ? new Date(dataInicioInput) : null;
-            const endDate = dataFimInput ? new Date(dataFimInput) : null;
-            const duration = (startDate &amp;&amp; endDate &amp;&amp; !isNaN(startDate) &amp;&amp; !isNaN(endDate)) ? Math.max(0, (endDate.getTime() - startDate.getTime()) / 60000) : 0;
+            let dataInicio = &quot;&quot;;
+            let dataFim = &quot;&quot;;
+            if (dataInicioInput) {
+                const d = new Date(dataInicioInput);
+                if (!isNaN(d.getTime())) dataInicio = d.toISOString();
+            }
+            if (dataFimInput) {
+                const d = new Date(dataFimInput);
+                if (!isNaN(d.getTime())) dataFim = d.toISOString();
+            }
 
-            const nextId = () =&gt; {
-                const nums = RAWDATA.map(d =&gt; parseInt(String(d.id || &#x27;&#x27;).replace(/\D+/g, &#x27;&#x27;), 10)).filter(n =&gt; !isNaN(n));
-                return String((nums.length ? Math.max(...nums) : 0) + 1);
+            const payload = {
+                acao: acao,
+                id: id || &quot;&quot;,
+                descricao: descricao,
+                categoria: categoria,
+                dataInicio: dataInicio,
+                dataFim: dataFim,
+                analista: analista,
+                solicitante: solicitante || &quot;Desenv Jornadas Digitais&quot;
             };
 
-            const record = {
-                id: id || nextId(),
-                analista,
-                descricao,
-                categoria,
-                start: startDate,
-                end: endDate,
-                duration,
-                status: endDate ? &#x27;Fechado&#x27; : &#x27;Aberto&#x27;,
-                motivo: categoria,
-                subClassificacao: &#x27;&#x27;,
-                solicitante: solicitante || &#x27;Desenv Jornadas Digitais&#x27;
-            };
+            console.log(&#x27;📤 CRUD:&#x27;, acao, JSON.stringify(payload, null, 2));
+            showLoading(true, acao === &#x27;INSERT&#x27; ? &#x27;Criando...&#x27; : &#x27;Atualizando...&#x27;);
 
-            showLoading(true, id ? &#x27;Atualizando localmente...&#x27; : &#x27;Criando localmente...&#x27;);
             try {
-                if (id) {
-                    const idx = RAWDATA.findIndex(item =&gt; String(item.id) === String(id));
-                    if (idx === -1) throw new Error(&#x27;Registro não encontrado para atualização&#x27;);
-                    RAWDATA[idx] = { ...RAWDATA[idx], ...record };
+                const response = await fetch(API_CRUD, {
+                    method: &#x27;POST&#x27;,
+                    headers: { &#x27;Content-Type&#x27;: &#x27;application/json&#x27; },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseText = await response.text();
+                console.log(&#x27;📥 Status:&#x27;, response.status, responseText);
+
+                if (response.ok) {
+                    showToast(acao === &#x27;INSERT&#x27; ? &#x27;Criado com sucesso!&#x27; : &#x27;Atualizado com sucesso!&#x27;, &#x27;success&#x27;);
+                    closeModal();
+                    setTimeout(() =&gt; loadRemoteData(), 1500);
                 } else {
-                    RAWDATA.unshift(record);
+                    throw new Error(`HTTP ${response.status}: ${responseText}`);
                 }
-                currentDataSource = &#x27;github_json&#x27;;
-                saveDataToLocalStorage();
-                updateDataInfoDisplay();
-                initDashboard();
-                closeModal();
-                showToast(id ? &#x27;Atualizado localmente com sucesso!&#x27; : &#x27;Criado localmente com sucesso!&#x27;, &#x27;success&#x27;);
             } catch (error) {
                 console.error(&#x27;❌ Erro:&#x27;, error);
                 showToast(`Erro: ${error.message}`, &#x27;error&#x27;);
@@ -18741,18 +18736,52 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
         }
 
         // ========================================================================
-        // deleteAtendimento - DELETE LOCAL
+        // deleteAtendimento - DELETE
         // ========================================================================
         async function deleteAtendimento(atendimento) {
             if (!confirm(`Excluir atendimento ID ${atendimento.id}?`)) return;
-            showLoading(true, &#x27;Excluindo localmente...&#x27;);
+
+            let dataInicio = &quot;&quot;;
+            let dataFim = &quot;&quot;;
+            if (atendimento.start) {
+                const d = atendimento.start instanceof Date ? atendimento.start : new Date(atendimento.start);
+                if (!isNaN(d.getTime())) dataInicio = d.toISOString();
+            }
+            if (atendimento.end) {
+                const d = atendimento.end instanceof Date ? atendimento.end : new Date(atendimento.end);
+                if (!isNaN(d.getTime())) dataFim = d.toISOString();
+            }
+
+            const payload = {
+                acao: &quot;DELETE&quot;,
+                id: String(atendimento.id || &quot;&quot;),
+                descricao: atendimento.descricao || &quot;&quot;,
+                categoria: atendimento.categoria || &quot;&quot;,
+                dataInicio: dataInicio,
+                dataFim: dataFim,
+                analista: atendimento.analista || &quot;&quot;,
+                solicitante: atendimento.solicitante || &quot;Desenv Jornadas Digitais&quot;
+            };
+
+            console.log(&#x27;📤 CRUD: DELETE&#x27;, JSON.stringify(payload, null, 2));
+            showLoading(true, &#x27;Excluindo...&#x27;);
+
             try {
-                RAWDATA = RAWDATA.filter(item =&gt; String(item.id) !== String(atendimento.id));
-                currentDataSource = &#x27;github_json&#x27;;
-                saveDataToLocalStorage();
-                updateDataInfoDisplay();
-                initDashboard();
-                showToast(&#x27;Excluído localmente com sucesso!&#x27;, &#x27;success&#x27;);
+                const response = await fetch(API_CRUD, {
+                    method: &#x27;POST&#x27;,
+                    headers: { &#x27;Content-Type&#x27;: &#x27;application/json&#x27; },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseText = await response.text();
+                console.log(&#x27;📥 Status:&#x27;, response.status, responseText);
+
+                if (response.ok) {
+                    showToast(&#x27;Excluído com sucesso!&#x27;, &#x27;success&#x27;);
+                    setTimeout(() =&gt; loadRemoteData(), 1500);
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${responseText}`);
+                }
             } catch (error) {
                 console.error(&#x27;❌ Erro:&#x27;, error);
                 showToast(`Erro: ${error.message}`, &#x27;error&#x27;);
@@ -18871,42 +18900,31 @@ body:not(.light-theme) .wizard-zoom-range{ accent-color: #FFD100; }
         }
         async function atualizarEmBackground() {
             try {
-                const response = await fetch(RAW_XLSX_URL, { method: &quot;GET&quot;, cache: &quot;no-store&quot; });
+                const hoje = new Date(), doisAnosAtras = new Date(hoje.getFullYear() - 2, hoje.getMonth(), hoje.getDate());
+                const controller = new AbortController(); setTimeout(() =&gt; controller.abort(), 10000);
+                const response = await fetch(API_READ, { method: &quot;POST&quot;, headers: { &quot;Content-Type&quot;: &quot;application/json&quot; }, body: JSON.stringify({ acao: &quot;&quot;, categoria: &quot;&quot;, dataInicio: doisAnosAtras.toISOString(), dataFim: hoje.toISOString() }), signal: controller.signal });
                 if (!response.ok) return;
-                const payload = await response.json();
-                const jsonData = Array.isArray(payload) ? payload : (Array.isArray(payload.reqsInternas) ? payload.reqsInternas : []);
-                const novosData = processLocalFileData(jsonData);
-                if (!novosData.length) return;
-                if (novosData.length !== RAWDATA.length) {
-                    RAWDATA = novosData;
-                    currentDataSource = &quot;github_json&quot;;
-                    updateDataInfoDisplay();
-                    initDashboard();
-                    saveDataToLocalStorage();
-                    showToast(&quot;✅ Atualizado do GitHub JSON&quot;, &quot;success&quot;);
-                }
-            } catch (e) { console.warn(&#x27;Atualização em background falhou:&#x27;, e); }
+                const jsonData = await response.json(); if (!jsonData || !jsonData.length) return;
+                const novosData = processSharePointData(jsonData); if (!novosData.length) return;
+                if (novosData.length !== RAWDATA.length) { RAWDATA = novosData; currentDataSource = &quot;api_power_automate&quot;; updateDataInfoDisplay(); initDashboard(); saveDataToLocalStorage(); showToast(&quot;✅ Atualizado&quot;, &quot;success&quot;); }
+            } catch (e) { }
         }
         async function carregarDaAPI(mostrarLoading) {
-            if (mostrarLoading) showLoading(true, &quot;Baixando GitHub JSON...&quot;);
+            if (mostrarLoading) showLoading(true, &quot;Conectando...&quot;);
             try {
-                const response = await fetch(RAW_XLSX_URL, { method: &quot;GET&quot;, cache: &quot;no-store&quot; });
+                const hoje = new Date(), doisAnosAtras = new Date(hoje.getFullYear() - 2, hoje.getMonth(), hoje.getDate());
+                const controller = new AbortController(); setTimeout(() =&gt; controller.abort(), 15000);
+                const response = await fetch(API_READ, { method: &quot;POST&quot;, headers: { &quot;Content-Type&quot;: &quot;application/json&quot; }, body: JSON.stringify({ acao: &quot;&quot;, categoria: &quot;&quot;, dataInicio: doisAnosAtras.toISOString(), dataFim: hoje.toISOString() }), signal: controller.signal });
                 if (!response.ok) throw new Error(&quot;Erro: &quot; + response.status);
-                const payload = await response.json();
-                const jsonData = Array.isArray(payload) ? payload : (Array.isArray(payload.reqsInternas) ? payload.reqsInternas : []);
-                RAWDATA = processLocalFileData(jsonData);
-                if (!RAWDATA.length) throw new Error(&quot;Dados inválidos&quot;);
-                currentDataSource = &quot;github_json&quot;;
-                updateDataInfoDisplay();
-                initDashboard();
-                showToast(&quot;✅ &quot; + RAWDATA.length + &quot; registros via GitHub JSON&quot;, &quot;success&quot;);
-                saveDataToLocalStorage();
+                const jsonData = await response.json(); if (!jsonData || !jsonData.length) throw new Error(&quot;Sem dados&quot;);
+                RAWDATA = processSharePointData(jsonData); if (!RAWDATA.length) throw new Error(&quot;Dados inválidos&quot;);
+                currentDataSource = &quot;api_power_automate&quot;; updateDataInfoDisplay(); initDashboard(); showToast(&quot;✅ &quot; + RAWDATA.length + &quot; registros&quot;, &quot;success&quot;); saveDataToLocalStorage();
             } catch (error) {
-                showToast(&quot;Erro: &quot; + error.message, &quot;error&quot;);
+                if (error.name === &#x27;AbortError&#x27;) { showToast(&quot;⏱️ Timeout&quot;, &quot;warning&quot;); const savedData = loadDataFromLocalStorage(); if (savedData?.data) { RAWDATA = savedData.data; currentDataSource = &quot;local_cache&quot;; updateDataInfoDisplay(); initDashboard(); } }
+                else showToast(&quot;Erro: &quot; + error.message, &quot;error&quot;);
             } finally { if (mostrarLoading) showLoading(false); }
         }
-        
-function saveDataToLocalStorage() { try { localStorage.setItem(&quot;dashboard_reqs_data&quot;, JSON.stringify({ data: RAWDATA, timestamp: Date.now(), source: currentDataSource })); } catch (e) { } }
+        function saveDataToLocalStorage() { try { localStorage.setItem(&quot;dashboard_reqs_data&quot;, JSON.stringify({ data: RAWDATA, timestamp: Date.now(), source: currentDataSource })); } catch (e) { } }
 
         // Função específica para processar dados do SharePoint via Power Automate// Função específica para processar dados do SharePoint via Power Automate
         function processSharePointData(jsonData) {
@@ -19042,27 +19060,24 @@ function saveDataToLocalStorage() { try { localStorage.setItem(&quot;dashboard_r
                 try {
                     const normalized = {};
                     for (let key in row) {
-                        if (Object.prototype.hasOwnProperty.call(row, key)) {
-                            normalized[String(key).trim().toLowerCase()] = row[key];
+                        if (row.hasOwnProperty(key)) {
+                            normalized[key.trim().toLowerCase()] = row[key];
                         }
                     }
-                    const getVal = (...candidates) =&gt; {
-                        for (const c of candidates) {
-                            const k = String(c).trim().toLowerCase();
-                            if (normalized[k] !== undefined &amp;&amp; normalized[k] !== null &amp;&amp; normalized[k] !== &#x27;&#x27;) return normalized[k];
-                        }
-                        return &#x27;&#x27;;
-                    };
+                    const keys = Object.keys(normalized);
 
-                    const analista = String(getVal(&#x27;Analista&#x27;) || &#x27;Não Identificado&#x27;).trim();
-                    const categoria = String(getVal(&#x27;Motivo&#x27;, &#x27;Título&#x27;, &#x27;Sub Classificação&#x27;, &#x27;Tipo de contato&#x27;) || &#x27;Geral&#x27;).trim();
-                    const descricao = String(getVal(&#x27;Descrição&#x27;, &#x27;Atualização do Chamado&#x27;, &#x27;Historico Contatos&#x27;) || &#x27;&#x27;).trim();
-                    const solicitante = String(getVal(&#x27;Solicitante&#x27;) || &#x27;&#x27;).trim();
-                    const motivo = String(getVal(&#x27;Motivo&#x27;) || &#x27;&#x27;).trim();
-                    const subClassificacao = String(getVal(&#x27;Sub Classificação&#x27;) || &#x27;&#x27;).trim();
-                    const statusBruto = String(getVal(&#x27;Status de liberação&#x27;, &#x27;Status de aprovação&#x27;) || &#x27;&#x27;).trim();
-                    const dtStart = getVal(&#x27;Data Inicio&#x27;);
-                    const dtEnd = getVal(&#x27;Data Fim&#x27;);
+                    const analistaKey = keys.find(k =&gt; k.includes(&quot;analista&quot;));
+                    const categoriaKey = keys.find(k =&gt; k.includes(&quot;categoria&quot;) || k.includes(&quot;tipo&quot;));
+                    const descricaoKey = keys.find(k =&gt; k.includes(&quot;descri&quot;) || k.includes(&quot;descricao&quot;) || k.includes(&quot;assunto&quot;));
+                    const inicioKey = keys.find(k =&gt; k.includes(&quot;início&quot;) || k.includes(&quot;inicio&quot;) || k.includes(&quot;data&quot;));
+                    const fimKey = keys.find(k =&gt; k.includes(&quot;fim&quot;));
+
+                    const analista = analistaKey ? String(normalized[analistaKey] || &quot;Não Identificado&quot;).trim() : &quot;Não Identificado&quot;;
+                    const categoria = categoriaKey ? String(normalized[categoriaKey] || &quot;Geral&quot;).trim() : &quot;Geral&quot;;
+                    const descricao = descricaoKey ? String(normalized[descricaoKey] || &quot;&quot;).trim() : &quot;&quot;;
+
+                    const dtStart = inicioKey ? normalized[inicioKey] : null;
+                    const dtEnd = fimKey ? normalized[fimKey] : null;
 
                     const dStart = parseDate(dtStart);
                     const dEnd = parseDate(dtEnd);
@@ -19075,25 +19090,16 @@ function saveDataToLocalStorage() { try { localStorage.setItem(&quot;dashboard_r
 
                     if (dStart &amp;&amp; !isNaN(dStart.getTime())) {
                         processed.push({
-                            id: row.ID || row.Id || row.id || row[&#x27;Número do Chamado Automação&#x27;] || `raw_${index+1}`,
+                            id: row.ID || row.Id || row.id || &#x27;&#x27;,
                             analista,
                             descricao,
                             categoria,
                             start: dStart,
                             end: dEnd,
                             duration,
-                            status: statusBruto || (dEnd ? &#x27;Fechado&#x27; : &#x27;Aberto&#x27;),
-                            motivo,
-                            subClassificacao,
-                            solicitante,
-                            cnpj: String(getVal(&#x27;CNPJ&#x27;) || &#x27;&#x27;).trim(),
-                            razaoSocial: String(getVal(&#x27;Razão Social&#x27;) || &#x27;&#x27;).trim(),
-                            origemContato: String(getVal(&#x27;Origem do contato&#x27;) || &#x27;&#x27;).trim(),
-                            tipoContato: String(getVal(&#x27;Tipo de contato&#x27;) || &#x27;&#x27;).trim(),
-                            areaResponsavel: String(getVal(&#x27;Area responsavel pela resolução&#x27;) || &#x27;&#x27;).trim(),
-                            gn: String(getVal(&#x27;GN&#x27;) || &#x27;&#x27;).trim(),
-                            titulo: String(getVal(&#x27;Título&#x27;) || &#x27;&#x27;).trim(),
-                            fcr: String(getVal(&#x27;FCR&#x27;) || &#x27;&#x27;).trim()
+                            status: row.Status || row.status || &#x27;Aberto&#x27;,
+                            motivo: row.Motivo || row.motivo || &#x27;&#x27;,
+                            subClassificacao: row.SubClassificacao || row.subclassificacao || &#x27;&#x27;
                         });
                     }
                 } catch (err) {
@@ -19223,7 +19229,7 @@ function saveDataToLocalStorage() { try { localStorage.setItem(&quot;dashboard_r
                             &lt;div&gt;⏳ Carregando...&lt;/div&gt;
                             &lt;div style=&quot;margin-top: 15px;&quot;&gt;
                                 &lt;button class=&quot;btn&quot; onclick=&quot;loadRemoteData()&quot; style=&quot;margin-top: 10px;&quot;&gt;
-                                    &lt;i class=&quot;fa-solid fa-cloud-arrow-down&quot;&gt;&lt;/i&gt; Carregar Base RAW
+                                    &lt;i class=&quot;fa-solid fa-cloud-arrow-down&quot;&gt;&lt;/i&gt; Carregar Base Remota
                                 &lt;/button&gt;
                             &lt;/div&gt;
                         &lt;/td&gt;
@@ -19265,8 +19271,7 @@ function saveDataToLocalStorage() { try { localStorage.setItem(&quot;dashboard_r
                 dataInfo.style.display = &#x27;flex&#x27;;
 
                 let sourceText = &quot;Local&quot;;
-                if (currentDataSource === &quot;github_json&quot;) sourceText = &quot;GitHub JSON Oficial&quot;;
-                else if (currentDataSource === &quot;api_power_automate&quot;) sourceText = &quot;GitHub JSON Oficial&quot;;
+                if (currentDataSource === &quot;api_power_automate&quot;) sourceText = &quot;API Power Automate&quot;;
                 else if (currentDataSource === &quot;local_file&quot;) sourceText = &quot;Arquivo Local&quot;;
                 else if (currentDataSource === &quot;local_cache&quot;) sourceText = &quot;Cache Local&quot;;
 
@@ -20187,457 +20192,20 @@ function populateFilters() {
 })();
 &lt;/script&gt;
 
-&lt;script id=&lt;/body&gt;&lt;/html&gt;"consolidaSafeAddEvt">
+&amp;lt;script id=&lt;/body&gt;&lt;/html&gt;&quot;consolidaSafeAddEvt&quot;&gt;
 (function(){
   try{
-    var p=EventTarget&&EventTarget.prototype;
+    var p=EventTarget&amp;&amp;EventTarget.prototype;
     if(!p||p.consolidaSafeAddEvt) return;
     var o=p.addEventListener;
-    if(typeof o!=='function') return;
+    if(typeof o!==&#x27;function&#x27;) return;
     p.addEventListener=function(t,l,opt){ if(l===undefined||l===null) return; return o.call(this,t,l,opt); };
     p.consolidaSafeAddEvt=true;
   }catch(e){}
 })();
-</script>
-
-<script>
-window.MOTIVOS_ENCERRAMENTO_PATCH = window.MOTIVOS_ENCERRAMENTO_PATCH || [
-"Posto em Litígio",
-"Vai sair do PPI",
-"Saiu do PPI",
-"Não quer expor os dados",
-"Caso resolvido",
-"Adesão realizada",
-"Tentativa de contato sem sucesso",
-"Desinteresse Comercial",
-"Posto cedido",
-"Não tem interesse",
-"Posto mudou a bandeira",
-"Retomou o uso",
-"Treinamento aplicado",
-"Problemas técnicos",
-"A rotina da pista dificulta o uso",
-"Baixa procura",
-"Posto Fechado"
-];
-function patchMotivoEncerramentoSelects(){
-["inputResolucao","insertResolucao","actResolucao"].forEach(id=>{
-const el=document.getElementById(id);
-if(!el) return;
-window.MOTIVOS_ENCERRAMENTO_PATCH.forEach(m=>{
-if(![...el.options].some(o=>o.value===m)){
-const opt=document.createElement("option");
-opt.value=m;
-opt.textContent=m;
-el.appendChild(opt);
-}
-});
-});
-}
-setTimeout(patchMotivoEncerramentoSelects,1500);
-</script>
-
-
-<script id="PATCH_V5_RUNTIME_HARDENING_20260314">
-(function(){
-  function patchFrame(){
-    var iframe = document.getElementById('frameConsolida');
-    if(!iframe || !iframe.contentWindow) return;
-    var w = iframe.contentWindow;
-    try{
-      w.MOTIVOS_ENCERRAMENTO_PATCH = w.MOTIVOS_ENCERRAMENTO_PATCH || [
-        "Posto em Litígio","Vai sair do PPI","Saiu do PPI","Não quer expor os dados","Caso resolvido",
-        "Adesão realizada","Tentativa de contato sem sucesso","Desinteresse Comercial","Posto cedido",
-        "Não tem interesse","Posto mudou a bandeira","Retomou o uso","Treinamento aplicado",
-        "Problemas técnicos","A rotina da pista dificulta o uso","Baixa procura","Posto Fechado"
-      ];
-      if (w.Chart && w.Chart.defaults && w.Chart.defaults.scales && w.Chart.defaults.scales.linear) {
-        var t = w.Chart.defaults.scales.linear.ticks || (w.Chart.defaults.scales.linear.ticks = {});
-        delete t.stepSize; t.maxTicksLimit = 50; t.autoSkip = true;
-      }
-      if (w.Chart && w.Chart.instances) {
-        Object.values(w.Chart.instances).forEach(function(ch){
-          try{
-            if(ch && ch.options && ch.options.scales){
-              Object.keys(ch.options.scales).forEach(function(axis){
-                var sc = ch.options.scales[axis] || {};
-                sc.ticks = sc.ticks || {};
-                delete sc.ticks.stepSize; sc.ticks.maxTicksLimit = 50; sc.ticks.autoSkip = true;
-              });
-              ch.update('none');
-            }
-          }catch(e){}
-        });
-      }
-    }catch(e){ console.warn('PATCH_V5 runtime warning:', e); }
-  }
-  window.addEventListener('load', function(){ setTimeout(patchFrame, 1200); setTimeout(patchFrame, 3000); });
-})();
-</script>
-
-
-<script id="perf-v2-script">
-(function(){
-  function idle(fn, t){ if ('requestIdleCallback' in window) return requestIdleCallback(fn, {timeout:t||1200}); return setTimeout(fn, 220); }
-  function setBusy(on){ document.body.classList.toggle('perf-busy', !!on); }
-  function addBadge(){ if (document.getElementById('perfV2Badge')) return; const b=document.createElement('div'); b.id='perfV2Badge'; b.innerHTML='<i class="fa-solid fa-bolt"></i><span>Performance V2</span>'; document.body.appendChild(b); }
-  function patchRenderCharts(){
-    if (typeof renderCharts !== 'function') return;
-    const __orig = renderCharts;
-    window.renderCharts = function(){
-      setBusy(true);
-      const tasks = [];
-      // lote único, mas jogado para idle, evitando engasgo no clique
-      tasks.push(function(){ __orig(); });
-      idle(function(){ try{ tasks[0](); } finally { setTimeout(function(){ setBusy(false); }, 220); } }, 1600);
-    };
-  }
-  function patchApplyFilters(){
-    if (typeof applyAllFilters !== 'function') return;
-    const __orig = applyAllFilters; let raf = 0; let lastCall = 0;
-    window.applyAllFilters = function(){
-      const now = Date.now();
-      if (now - lastCall < 80) { cancelAnimationFrame(raf); }
-      lastCall = now;
-      setBusy(true);
-      raf = requestAnimationFrame(function(){
-        try{ __orig(); } finally { setTimeout(function(){ setBusy(false); }, 180); }
-      });
-    };
-  }
-  function patchWordCloudMoreLazy(){
-    if (typeof lazyInitWordCloud !== 'function') return;
-    const __orig = lazyInitWordCloud;
-    window.lazyInitWordCloud = function(force){
-      if (force === true) {
-        // empurra bem mais para ocioso quando for atualização causada por filtro
-        return idle(function(){ __orig(true); }, 2200);
-      }
-      return __orig(force);
-    };
-  }
-  function patchPopulateFilters(){
-    if (typeof populateFilters !== 'function') return;
-    const __orig = populateFilters;
-    window.populateFilters = function(){
-      // deixa os selects pesados respirarem um pouco após carga do JSON
-      return idle(function(){ __orig(); }, 1000);
-    };
-  }
-  function patchTableHint(){
-    try{
-      const pi = document.getElementById('paginationInfo');
-      if (pi && !document.getElementById('perfV2HintRows')){
-        const s = document.createElement('div');
-        s.id = 'perfV2HintRows';
-        s.style.fontSize='10px'; s.style.color='var(--text-muted)'; s.style.marginTop='6px';
-        s.textContent='Modo leve: 180 linhas por página para preservar fluidez sem perder o visual.';
-        pi.parentElement && pi.parentElement.appendChild(s);
-      }
-    }catch(e){}
-  }
-  function patchChartDefaults(){
-    try{
-      if (window.Chart && Chart.defaults){
-        Chart.defaults.responsive = true;
-        Chart.defaults.maintainAspectRatio = false;
-        Chart.defaults.animation = false;
-        Chart.defaults.devicePixelRatio = 1;
-        if (Chart.defaults.plugins && Chart.defaults.plugins.legend) Chart.defaults.plugins.legend.labels = Object.assign({}, Chart.defaults.plugins.legend.labels || {}, { boxWidth: 10, boxHeight: 10 });
-      }
-    }catch(e){}
-  }
-  function patchHeavyBoot(){
-    // adia algumas rotinas após a primeira pintura
-    idle(function(){
-      try{ if (typeof updateWordCloud === 'function') updateWordCloud(); }catch(e){}
-    }, 2400);
-  }
-  window.addEventListener('DOMContentLoaded', function(){
-    addBadge();
-    patchChartDefaults();
-    patchApplyFilters();
-    patchRenderCharts();
-    patchWordCloudMoreLazy();
-    patchPopulateFilters();
-    patchTableHint();
-    patchHeavyBoot();
-  });
-})();
-</script>
-
-
-<script id="thiago-v6-runtime">
-(function(){
-  if (window.__THIAGO_V6_RUNTIME__) return;
-  window.__THIAGO_V6_RUNTIME__ = true;
-
-  // evita estouro de quota do localStorage para cache operacional grande
-  try {
-    const originalSetItem = localStorage.setItem.bind(localStorage);
-    localStorage.setItem = function(k, v){
-      try {
-        if (/^cache_operational_/i.test(String(k||'')) && typeof v === 'string' && v.length > 1200000) return;
-        return originalSetItem(k, v);
-      } catch(err) {
-        try {
-          if (err && /QuotaExceeded/i.test(String(err.name || err.message || err))) {
-            const keys = [];
-            for (let i = 0; i < localStorage.length; i++) {
-              const key = localStorage.key(i);
-              if (key && /^cache_/i.test(key)) keys.push(key);
-            }
-            keys.forEach(key => { try { localStorage.removeItem(key); } catch(e) {} });
-            if (!/^cache_operational_/i.test(String(k||''))) {
-              try { return originalSetItem(k, v); } catch(e2) {}
-            }
-            return;
-          }
-        } catch(e) {}
-        throw err;
-      }
-    };
-  } catch(e) {}
-
-  function parseDate(v){
-    if(!v) return null;
-    if(v instanceof Date && !isNaN(v)) return v;
-    const s = String(v).trim();
-    if(!s) return null;
-    if(/^\d{4}-\d{2}-\d{2}/.test(s)) { const d = new Date(s.length<=10 ? (s+'T12:00:00') : s); return isNaN(d) ? null : d; }
-    if(/^\d{2}\/\d{2}\/\d{4}/.test(s)) { const p=s.split(/[\sT]/)[0].split('/'); const d=new Date(parseInt(p[2],10), parseInt(p[1],10)-1, parseInt(p[0],10), 12,0,0); return isNaN(d)?null:d; }
-    const d = new Date(s); return isNaN(d)?null:d;
-  }
-  function norm(v){
-    try { return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
-    catch(e){ return String(v||'').toLowerCase().trim(); }
-  }
-
-  function patchConsolida(){
-    const frame = document.getElementById('frameConsolida');
-    const win = frame && frame.contentWindow;
-    if(!win || win.__THIAGO_V6_CONSOLIDA__) return false;
-    if(typeof win.applyAllFilters !== 'function' || typeof win.renderKPIs !== 'function') return false;
-    win.__THIAGO_V6_CONSOLIDA__ = true;
-
-    if (typeof win.enterpriseSend === 'function' && !win.__THIAGO_ENTERPRISE_REQS__) {
-      win.__THIAGO_ENTERPRISE_REQS__ = true;
-      const originalEnterprise = win.enterpriseSend;
-      win.enterpriseSend = async function(action, data, id){
-        const hasReqInterna = data && ((data.tipoRegistro === 'REQ_INTERNA') || (data.TipoRegistro === 'REQ_INTERNA') || (data.sourceModule === 'reqsInternas'));
-        if (!hasReqInterna) return originalEnterprise.apply(this, arguments);
-        const payload = { acao: String(action || '').toUpperCase() };
-        if (id !== null && id !== undefined && id !== '') payload.id_registro = String(id);
-        payload.tipoRegistro = data.tipoRegistro || data.TipoRegistro || 'REQ_INTERNA';
-        payload.TipoRegistro = payload.tipoRegistro;
-        payload.uid = data.uid || id || '';
-        payload.id = data.id || id || '';
-        payload.titulo = data.titulo !== undefined ? data.titulo : null;
-        payload['Título'] = data['Título'] !== undefined ? data['Título'] : null;
-        payload.descricao = data.descricao !== undefined ? data.descricao : (data['Descrição'] !== undefined ? data['Descrição'] : '');
-        payload['Descrição'] = payload.descricao;
-        payload.detalhes = data.detalhes !== undefined ? data.detalhes : payload.descricao;
-        payload.categoria = data.categoria !== undefined ? data.categoria : data.Categoria;
-        payload.Categoria = payload.categoria;
-        payload.status = data.status || '';
-        payload.Status = data.Status || payload.status;
-        payload.statusNorm = data.statusNorm || '';
-        payload.dataInicio = data.dataInicio || data['Data Inicio'] || null;
-        payload['Data Inicio'] = payload.dataInicio;
-        payload.dataFim = data.dataFim || data['Data Fim'] || null;
-        payload['Data Fim'] = payload.dataFim;
-        payload.dtStart = data.dtStart || payload.dataInicio;
-        payload.dtEnd = data.dtEnd || payload.dataFim;
-        payload.analista = data.analista || data.Analista || '';
-        payload.Analista = payload.analista;
-        payload.solicitante = data.solicitante || data['Solicitante'] || '';
-        payload['Solicitante'] = payload.solicitante;
-        payload.motivo = data.motivo || payload.categoria || '';
-        payload.subClassificacao = data.subClassificacao || 'Requisição Interna';
-        payload.areaResponsavelResolucao = data.areaResponsavelResolucao || payload.solicitante || '';
-        payload.origemContato = data.origemContato || 'Dashboard Req. Internas';
-        payload.tipoAtendimento = data.tipoAtendimento || 'Interno';
-        payload.gn = data.gn || 'Requisições Internas';
-        payload.razaoSocial = data.razaoSocial || 'Requisição Interna';
-        payload.cnpj = data.cnpj || '';
-        payload.caminho = data.caminho || 'personal/roberta_rocha_ipiranga_ipiranga/Lists/Consolida   Demandas Internas';
-        payload.tipoItem = data.tipoItem || 'Item';
-        payload.sourceModule = 'reqsInternas';
-        const headers = typeof win.getEnterpriseHeaders === 'function' ? win.getEnterpriseHeaders() : { 'Content-Type':'application/json', 'Accept':'application/json' };
-        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        const timeoutId = controller ? setTimeout(() => controller.abort(), 45000) : null;
-        try {
-          const r = await fetch(win.POWER_AUTOMATE_URL || 'https://late-pine-afcdtorre-github-json-save.thiago-junior.workers.dev/', {
-            method: 'POST', headers, body: JSON.stringify(payload), signal: controller ? controller.signal : undefined
-          });
-          const rawText = await r.text();
-          let parsed = null; try { parsed = rawText ? JSON.parse(rawText) : null; } catch(e) {}
-          if (!r.ok || (parsed && parsed.ok === false)) {
-            const msg = (parsed && (parsed.detail || parsed.error || parsed.message)) || rawText || ('Erro ' + r.status);
-            throw new Error(msg);
-          }
-          return parsed || { ok: true };
-        } catch (e) {
-          if (e && e.name === 'AbortError') throw new Error('Tempo limite excedido ao salvar no Worker.');
-          throw e;
-        } finally {
-          if (timeoutId) clearTimeout(timeoutId);
-        }
-      };
-    }
-
-    const originalRenderKPIs = win.renderKPIs;
-    const originalApplyAllFilters = win.applyAllFilters;
-
-    function ensureIndex(item){
-      if(!item || item.__v6idx) return item;
-      const s = parseDate(item.dtStart || item.dataInicio || item['Data Inicio']);
-      const e = parseDate(item.dtEnd || item.dataFim || item['Data Fim']);
-      item.__startMs = s ? +s : null;
-      item.__endMs = e ? +e : null;
-      item.__searchNorm = norm([item.analista,item.solicitante,item.motivo,item.razaoSocial,item.nomeFantasia,item.cnpj,item.cnpjFormatted,item.gn,item.areaResponsavelResolucao,item.descricao,item.sub,item.subClassificacao,item.tipoContato,item.origemContato].filter(Boolean).join(' | '));
-      item.__motivoEncNorm = norm(typeof win.getMotivoEncerramentoLabel==='function' ? win.getMotivoEncerramentoLabel(item) : (item.motivoEncerramento || ''));
-      item.__dirNorm = norm(typeof win.mapGNToDiretoria==='function' ? win.mapGNToDiretoria(item.gnOriginal || item.gn || item['Gerência_Negócio'] || item['Gerencia_Negocio'] || '') : '');
-      item.__v6idx = 1;
-      return item;
-    }
-
-    win.applyAllFilters = function(){ originalApplyAllFilters(); try{ win.renderKPIs(); }catch(e){ console.error('renderKPIs after apply', e); } };
-
-    win.renderKPIs = function(){
-      try { originalRenderKPIs(); } catch(e) { console.error('orig renderKPIs', e); }
-      if(!Array.isArray(win.RAW) || !win.RAW.length) return;
-      let dEnd = null;
-      try {
-        const de = win.document.getElementById('dateEnd');
-        if (de && de.value) dEnd = new Date(de.value + 'T23:59:59.999');
-        if (win.CHART_FILTERS && win.CHART_FILTERS['Evo Date']) {
-          const evo = parseDate(win.CHART_FILTERS['Evo Date']);
-          if (evo) { dEnd = new Date(evo); dEnd.setHours(23,59,59,999); }
-        }
-      } catch(e){}
-
-      // conceito pedido: acumulado do ano até o fim do período (jan; jan+fev; jan+fev+mar...)
-      let open = 0;
-      const refEndMs = dEnd ? +dEnd : null;
-      if (refEndMs) {
-        const cumulativeStart = new Date(dEnd.getFullYear(), 0, 1, 0, 0, 0, 0).getTime();
-        const q = norm(safe(()=>win.document.getElementById('qSearch').value) || '');
-        const fMotivo = safe(()=>win.document.getElementById('motivoSelect').value) || '';
-        const fAnalista = safe(()=>Array.from(win.document.getElementById('analistaSelect').selectedOptions).map(o=>o.value)) || [];
-        const fSub = safe(()=>win.document.getElementById('subSelect').value) || '';
-        const fTipoContato = safe(()=>win.document.getElementById('tipoContatoSelect').value) || '';
-        const fAreaResponsavel = safe(()=>win.document.getElementById('areaResponsavelSelect').value) || '';
-        const fOrigem = safe(()=>win.CHART_FILTERS['Origem']) || null;
-        const fGN = safe(()=>win.CHART_FILTERS['GN']) || null;
-        const fDiretoria = safe(()=>win.CHART_FILTERS['Diretoria']) || null;
-        const fCnpjCount = safe(()=>win.CHART_FILTERS['CnpjCount']) || null;
-        const fTopMotivo = safe(()=>win.CHART_FILTERS['TopMotivo']) || null;
-        const fMotivoEnc = safe(()=>win.CHART_FILTERS['MotivoEncerramento']) || null;
-        const fcrOnly = safe(()=>win.CHART_FILTERS['FCR_Sim']) || null;
-        const avgTimeOnly = safe(()=>win.CHART_FILTERS['AvgTime']) || null;
-        const chartAnalista = safe(()=>win.CHART_FILTERS['Doughnut Selection']['Analista']) || null;
-        const baseMatch = (rawItem)=>{ const item = ensureIndex(rawItem); if(q && !(item.__searchNorm||'').includes(q)) return false; if(fMotivo&&item.motivo!==fMotivo) return false; if(fAnalista.length&&!fAnalista.includes(item.analista)) return false; if(fSub&&item.sub!==fSub&&item.subClassificacao!==fSub) return false; if(fTipoContato&&item.tipoContato!==fTipoContato) return false; if(fAreaResponsavel&&item.areaResponsavelResolucao!==fAreaResponsavel) return false; if(fOrigem&&item.origemContato!==fOrigem) return false; if(fGN&&item.gn!==fGN) return false; if(fDiretoria&&item.__dirNorm!==norm(fDiretoria)) return false; if(fCnpjCount&&!(item.cnpj&&String(item.cnpj).trim()!=='')) return false; if(fTopMotivo&&item.motivo!==fTopMotivo) return false; if(fMotivoEnc&&item.__motivoEncNorm!==norm(fMotivoEnc)) return false; if(fcrOnly&&item.fcr!=='Sim') return false; if(avgTimeOnly&&!(item.statusNorm==='Fechado'&&item.tempoResolucaoDias!==null)) return false; if(chartAnalista&&item.analista!==chartAnalista) return false; return true; };
-        open = win.RAW.filter(rawItem => { const item = ensureIndex(rawItem); return baseMatch(item) && !!(item.__startMs && item.__startMs >= cumulativeStart && item.__startMs <= refEndMs && (!item.__endMs || item.__endMs > refEndMs)); }).length;
-      } else {
-        open = (win.FILTERED || []).filter(d => d && d.statusNorm === 'Aberto').length;
-      }
-      const kOpen = win.document.getElementById('kOpen');
-      const hOpen = win.document.getElementById('headerOpen');
-      const ctx = win.document.getElementById('contextSummary');
-      const kOpenHelper = win.document.getElementById('kOpenHelper');
-      if (kOpen) kOpen.innerText = open;
-      if (hOpen) hOpen.innerText = open;
-      if (ctx && Array.isArray(win.FILTERED)) ctx.innerHTML = `Exibindo <span>${win.FILTERED.length}</span> registros filtrados de <span>${win.RAW.length}</span> totais. Em aberto no recorte: <span>${open}</span>.`;
-      if (kOpenHelper) kOpenHelper.innerText = dEnd ? ((win.CHART_FILTERS && win.CHART_FILTERS['Status']==='Aberto') ? 'Clique para remover filtro de backlog aberto' : 'Ao filtrar período, Em Aberto considera o acumulado do ano até o fim do período') : ((win.CHART_FILTERS && win.CHART_FILTERS['Status']==='Aberto') ? 'Clique para remover filtro "Em Aberto"' : 'Clique para filtrar por status "Em Aberto"');
-    };
-
-    try { setTimeout(()=>win.renderKPIs(), 150); } catch(e){}
-    return true;
-  }
-
-  function patchReqs(){
-    const frame = document.getElementById('frameReqs');
-    const win = frame && frame.contentWindow;
-    if(!win || win.__THIAGO_V6_REQS__) return false;
-    if(!win.document || !win.document.getElementById('formAtendimento')) return false;
-    win.__THIAGO_V6_REQS__ = true;
-
-    win.saveAtendimento = async function(){
-      const form = win.document.getElementById('formAtendimento');
-      if (!form.checkValidity()) { form.reportValidity(); return; }
-      const id = win.document.getElementById('atendimentoId').value;
-      const descricao = win.document.getElementById('inputDescricao').value.trim();
-      const categoria = win.document.getElementById('inputCategoria').value;
-      const dataInicioInput = win.document.getElementById('inputDataInicio').value;
-      const dataFimInput = win.document.getElementById('inputDataFim').value;
-      const analista = win.document.getElementById('inputAnalista').value;
-      const solicitante = win.document.getElementById('inputSolicitante').value;
-      if (!descricao || !categoria || !dataInicioInput || !analista) { win.showToast('Preencha todos os campos obrigatórios', 'error'); return; }
-      const startDate = dataInicioInput ? new Date(dataInicioInput) : null;
-      const endDate = dataFimInput ? new Date(dataFimInput) : null;
-      const duration = (startDate && endDate && !isNaN(startDate) && !isNaN(endDate)) ? Math.max(0, (endDate.getTime() - startDate.getTime()) / 60000) : 0;
-      const nextId = ()=>{ const nums=(win.RAWDATA||[]).map(d=>{ const m=String(d.id||'').match(/(\d+)/g); return m?parseInt(m.join(''),10):NaN; }).filter(n=>!isNaN(n)); const nextNum=(nums.length?Math.max(...nums):0)+1; return `RI-${String(nextNum).padStart(6,'0')}`; };
-      const recordId=id||nextId(), statusLabel=endDate?'Concluído':'Em Aberto', statusNorm=endDate?'Fechado':'Aberto', startIso=startDate&&!isNaN(startDate)?startDate.toISOString():null, endIso=endDate&&!isNaN(endDate)?endDate.toISOString():null;
-      const localRecord={id:recordId, uid:recordId, TipoRegistro:'REQ_INTERNA', 'TipoRegistro':'REQ_INTERNA', 'Título':null, titulo:null, 'Descrição':descricao, descricao, detalhes:descricao, 'Categoria':categoria, categoria, motivo:categoria, 'Data Inicio':startIso, 'Data Fim':endIso, dtStart:startIso, dtEnd:endIso, start:startDate, end:endDate, duration, 'Analista':analista, analista, 'Solicitante':solicitante||'Desenv Jornadas Digitais', solicitante:solicitante||'Desenv Jornadas Digitais', 'Tipo de Item':'Item', status:statusLabel, 'Status':statusLabel, statusNorm, subClassificacao:'Requisição Interna', areaResponsavelResolucao:solicitante||'Desenv Jornadas Digitais', origemContato:'Dashboard Req. Internas', tipoContato:'Interno', gn:'Requisições Internas', razaoSocial:'Requisição Interna', cnpj:''};
-      const payload={id:recordId, uid:recordId, tipoRegistro:'REQ_INTERNA', TipoRegistro:'REQ_INTERNA', categoria, Categoria:categoria, titulo:null, 'Título':null, descricao, 'Descrição':descricao, detalhes:descricao, status:statusLabel, Status:statusLabel, statusNorm, dataInicio:startIso, 'Data Inicio':startIso, dataFim:endIso, 'Data Fim':endIso, dtStart:startIso, dtEnd:endIso, analista, Analista:analista, solicitante:solicitante||'Desenv Jornadas Digitais', 'Solicitante':solicitante||'Desenv Jornadas Digitais', motivo:categoria, subClassificacao:'Requisição Interna', areaResponsavelResolucao:solicitante||'Desenv Jornadas Digitais', origemContato:'Dashboard Req. Internas', tipoAtendimento:'Interno', gn:'Requisições Internas', razaoSocial:'Requisição Interna', cnpj:'', caminho:'personal/roberta_rocha_ipiranga_ipiranga/Lists/Consolida   Demandas Internas', tipoItem:'Item', sourceModule:'reqsInternas'};
-      win.showLoading(true, id ? 'Salvando no endpoint e atualizando...' : 'Enviando para endpoint e criando...');
-      try {
-        const parentWin = window;
-        const consolidaFrame = parentWin.document.getElementById('frameConsolida');
-        const enterprise = consolidaFrame && consolidaFrame.contentWindow ? consolidaFrame.contentWindow.enterpriseSend : null;
-        if (typeof enterprise !== 'function') throw new Error('enterpriseSend do dashboard principal não disponível');
-        await enterprise(id ? 'UPDATE' : 'CREATE', payload, recordId);
-        if (id) {
-          const idx = (win.RAWDATA||[]).findIndex(item => String(item.id) === String(id));
-          if (idx === -1) throw new Error('Registro não encontrado para atualização');
-          win.RAWDATA[idx] = { ...win.RAWDATA[idx], ...localRecord };
-        } else {
-          win.RAWDATA.unshift(localRecord);
-        }
-        win.currentDataSource = 'github_json';
-        try { win.saveDataToLocalStorage(); } catch(e){}
-        try { win.updateDataInfoDisplay(); } catch(e){}
-        try { win.initDashboard(); } catch(e){}
-        try { win.closeModal(); } catch(e){}
-        win.showToast(id ? 'Atualizado no endpoint e localmente com sucesso!' : 'Criado no endpoint e localmente com sucesso!', 'success');
-        setTimeout(()=>{ try { if (typeof win.carregarDaAPI === 'function') win.carregarDaAPI(false); } catch(e){} }, 1200);
-      } catch(error) {
-        console.error('Erro ao salvar req interna:', error);
-        win.showToast('Erro ao salvar no endpoint: ' + (error && error.message ? error.message : error), 'error');
-      } finally {
-        win.showLoading(false);
-      }
-    };
-    return true;
-  }
-
-  function ensureVisible(){
-    try {
-      const c = document.getElementById('frameConsolida');
-      const r = document.getElementById('frameReqs');
-      const active = (c && c.classList && c.classList.contains('active')) || (r && r.classList && r.classList.contains('active'));
-      if (!active && c && c.classList) c.classList.add('active');
-    } catch(e) {}
-  }
-
-  function boot(){ ensureVisible(); patchConsolida(); patchReqs(); }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot,300); setTimeout(boot,1200); setTimeout(boot,2400); });
-  } else {
-    setTimeout(boot,300); setTimeout(boot,1200); setTimeout(boot,2400);
-  }
-
-  const fc = document.getElementById('frameConsolida');
-  const fr = document.getElementById('frameReqs');
-  if (fc) fc.addEventListener('load', ()=>setTimeout(boot,150));
-  if (fr) fr.addEventListener('load', ()=>setTimeout(boot,150));
-})();
-</script>
-
-</body>
-</html>"></iframe>
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe>
 
     <!-- FLOATING ACTION BUTTON -->
 
@@ -20678,8 +20246,41 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
                 currentView = 'consolida';
             }
 
-            const fabEl = document.getElementById('fab');
-            try { if (fabEl && fabEl.classList) fabEl.classList.remove('expanded'); } catch(e) {}
+            try {
+                const fab = document.getElementById('fab');
+                if (fab && fab.classList) fab.classList.remove('expanded');
+            } catch(e) {}
+        }, 380);
+            }
+
+            // troca efetiva
+            if (frameConsolida) frameConsolida.classList.remove('active');
+            if (frameReqs) frameReqs.classList.remove('active');
+
+            requestAnimationFrame(function(){
+                if (next) next.classList.add('active');
+            });
+
+            if (indicator) {
+                indicator.className = (view === 'consolida') ? 'consolida' : 'reqs';
+            }
+
+            currentView = view;
+        } else {
+                if(frameReqs&&frameReqs.classList)frameReqs.classList.remove('active');
+                if(frameConsolida&&frameConsolida.classList)frameConsolida.classList.add('active');
+                indicator.className = 'consolida';
+                fabItems[1]?.classList?.remove('active');
+                fabItems[0]?.classList?.add('active');
+                currentView = 'consolida';
+            }
+
+            // Close FAB menu
+            (document.getElementById('fab')||{}).classList.remove('expanded');
+        }
+
+        function toggleFab() {
+            (document.getElementById('fab')||{}).classList.toggle('expanded');
         }
 
         // ========== MESSAGE LISTENER ==========
@@ -23225,6 +22826,7 @@ el.appendChild(opt);
 setTimeout(patchMotivoEncerramentoSelects,1500);
 </script>
 
+<script id="thiago-final-marker-v2">console.log('Thiago final v2: front Git + req internas Power Automate + counter localStorage + safe showView');</script>
 </body>
 </html>"></iframe>
 
