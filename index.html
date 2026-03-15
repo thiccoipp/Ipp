@@ -22827,6 +22827,38 @@ setTimeout(patchMotivoEncerramentoSelects,1500);
 </script>
 
 <script id="thiago-final-marker-v2">console.log('Thiago final v2: front Git + req internas Power Automate + counter localStorage + safe showView');</script>
+
+<script>
+/* ===== PATCH API CRUD – DATAS SAFE (Power Automate) ===== */
+(function(){
+  const _enterpriseSend = window.enterpriseSend;
+  if (typeof _enterpriseSend !== 'function') return;
+
+  window.enterpriseSend = async function(action, payload, id){
+    try{
+      if(payload){
+        // normaliza dataInicio
+        if(payload.dataInicio){
+          const d = new Date(payload.dataInicio);
+          if(!isNaN(d)) payload.dataInicio = d.toISOString();
+        }
+        // normaliza dataFim (NUNCA enviar string vazia)
+        if(!payload.dataFim || payload.dataFim === ''){
+          delete payload.dataFim;
+        } else {
+          const df = new Date(payload.dataFim);
+          if(!isNaN(df)) payload.dataFim = df.toISOString();
+        }
+      }
+      return await _enterpriseSend(action, payload, id);
+    } catch(e){
+      console.error('[API_PATCH]', e);
+      throw e;
+    }
+  };
+})();
+</script>
+
 </body>
 </html>"></iframe>
 
